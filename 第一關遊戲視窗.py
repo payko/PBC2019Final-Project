@@ -23,6 +23,15 @@ player2_surface = player_font.render('Name2', False, black)
 player2_rect = player2_surface.get_rect()
 player2_rect.center = (width-20-size/2, 20+size+20+20)
 
+# 設定分數
+score_font = pygame.font.Font(None, 32) # 字體大小 = 32
+score1_surface = player_font.render('Score1', False, black) # 玩家1分數
+score1_rect = score1_surface.get_rect()
+score1_rect.center = (20+size+50, 50)
+score2_surface = player_font.render('Score2', False, black) # 玩家2分數
+score2_rect = score2_surface.get_rect()
+score2_rect.center = (width-20-size-50, 50)
+
 # 設定題目
 question_font = pygame.font.Font(None, 60) # 字體大小 = 60
 question_surface = question_font.render('Question', False, black) ## Question更改為隨機數字
@@ -41,6 +50,10 @@ while True: # 遊戲迴圈
     screen.blit(player1_surface, player1_rect) # 玩家1名稱
     pygame.draw.rect(screen, white, (width-20-size, 20, size, 20+size), 2) # 玩家2頭像
     screen.blit(player2_surface, player2_rect) # 玩家2名稱
+
+    # 顯示分數
+    screen.blit(score1_surface, score1_rect) # 玩家1分數
+    screen.blit(score2_surface, score2_rect) # 玩家2分數
 
     # 顯示題目
     screen.blit(question_surface, question_rect)
