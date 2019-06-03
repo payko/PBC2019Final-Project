@@ -31,6 +31,7 @@ question_rect.center = (width/2, height/2)
 
 # 設定拍手
 clap = pygame.image.load('clap.png')
+show = 0 # 不顯示拍手 ## 換新題目show要重設為0
 
 while True: # 遊戲迴圈
     screen.fill(background)
@@ -49,11 +50,17 @@ while True: # 遊戲迴圈
         # player1按 s 鍵，player2按 k 鍵
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_s:
-                screen.blit(clap, (50, 350))
+                show = 1
             elif event.key == pygame.K_k:
-                screen.blit(clap, (width-50-260, 350))
+                show = 2
         # 關閉視窗
         elif event.type == pygame.QUIT:
             pygame.quit()
+
+    # 顯示拍手
+    if show == 1:
+        screen.blit(clap, (50, 350))
+    elif show == 2:
+        screen.blit(clap, (width-50-260, 350))
 
     pygame.display.flip()
