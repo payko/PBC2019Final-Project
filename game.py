@@ -44,19 +44,16 @@ while True: # 遊戲迴圈
     # 顯示題目
     screen.blit(question_surface, question_rect)
 
-    # 顯示拍手
-    # player1按 s 鍵，player2按 k 鍵
     for event in pygame.event.get():
+        # 顯示拍手
+        # player1按 s 鍵，player2按 k 鍵
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_s:
                 screen.blit(clap, (50, 350))
             elif event.key == pygame.K_k:
                 screen.blit(clap, (width-50-260, 350))
-
-
-    # 關閉視窗
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
+        # 關閉視窗
+        elif event.type == pygame.QUIT:
             pygame.quit()
 
-    pygame.display.update()
+    pygame.display.flip()
