@@ -2,6 +2,9 @@ import pygame
 
 pygame.init()
 
+COUNT = pygame.USEREVENT + 1
+pygame.time.set_timer(COUNT,1000)  # 每隔1秒發送一次自定義事件
+
 #functions for game windows
 def blank_window(string):
     stay = True
@@ -26,6 +29,13 @@ def blank_window(string):
         screen.blit(image_start_button, (button_x, button_y))  #button要換圖片
         pygame.display.flip()
         mouse = pygame.mouse.get_pos()
+
+def show_time(text):
+    fontbigObj = pygame.font.Font(None, 32)
+    clock_surface = fontbigObj.render(text, True, black)
+    clock_rect = clock_surface.get_rect()
+    clock_rect.center = (width / 2, 200)
+    screen.blit(clock_surface, clock_rect)
 
 def game_intro(image_rule):
     intro = True
@@ -67,10 +77,9 @@ def set_player(name, num):
 def set_score(score, num):
     background, black, white = set_color()
     size = 140
-    player_font = pygame.font.Font(None, 32)
     # 設定分數
     score_font = pygame.font.Font(None, 32)  # 字體大小 = 32
-    score_surface = player_font.render(score, False, black)  # 玩家1分數
+    score_surface = score_font.render(score, False, black)  # 玩家1分數
     score_rect = score_surface.get_rect()
     if num == 1:
         score_rect.center = (20 + size + 50, 50)
@@ -80,6 +89,7 @@ def set_score(score, num):
 
 def game_1():
     game1 = True
+    countdown = 60
     while game1:
         background, black, white = set_color()
         size = 140
@@ -103,30 +113,39 @@ def game_1():
             screen.blit(score2_surface, score2_rect)  # 玩家2分數
             # 顯示題目
             screen.blit(question_surface, question_rect)
-
+            countstext = str(countdown)
             for event in pygame.event.get():
                 # 顯示拍手
                 # player1按 s 鍵，player2按 k 鍵
+                
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_s:
                         show = 1
                     elif event.key == pygame.K_k:
                         show = 2
+                    elif event.key == pygame.K_1:
+                        game1 = False
                 # 關閉視窗
-                elif event.type == pygame.QUIT:
+                if event.type == pygame.QUIT:
                     pygame.quit()
+                if event.type == COUNT:
+                    countdown = countdown - 1
+                    countstext = str(countdown)
+                    if countdown == 0:
+                        game1 = False
 
             # 顯示拍手
             if show == 1:
                 screen.blit(clap, (50, 350))
             elif show == 2:
                 screen.blit(clap, (width - 50 - 260, 350))
-                game1 = False
-        
-            pygame.display.flip()
+            
+            show_time(countstext)
+            pygame.display.update()
 
 def game_2():
     game2 = True
+    countdown = 100
     while game2:
         background, black, white = set_color()
         orange = (255, 147, 0)
@@ -177,10 +196,14 @@ def game_2():
             screen.blit(image_up_before, (30 + 64 + 64 + 64 + 11.3 + 11.3 + 11.3 + 350, 223)) # 1-4
             ## 其他的題目位置去看"04第二關遊戲視窗"
 
+            countstext = str(countdown)
             for event in pygame.event.get():
                 # 玩家按下相對按鍵，題目變色
-                """
+                
                 if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_1:
+                        game2 = False
+                    """
                     # 玩家 1
                     if event.key == pygame.K_w:
                         # 上 圖示變色
@@ -198,21 +221,26 @@ def game_2():
                     elif event.key == pygame.K_LEFT:
                         # 左 圖示變色
                     elif event.key == pygame.K_RIGHT:
-                        # 右 圖示變色"""
+                        # 右 圖示變色
+                    """
                 # 關閉視窗
                 if event.type == pygame.QUIT:
                     pygame.quit()
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_s:
-                        game2 = False 
-
+                if event.type == COUNT:
+                    countdown = countdown - 1
+                    countstext = str(countdown)
+                    if countdown == 0:
+                        game2 = False
+            show_time(countstext)
             pygame.display.flip()
 
 def game_3():
     game3 = True
+    countdown = 30
     while game3:
         background, black, white = set_color()
         size = 140
+        
         # 設定題目
         question_font = pygame.font.Font(None, 60)  # 字體大小 = 60
         question_surface = question_font.render('Question', False, black)  ## Question更改為隨機數字
@@ -233,7 +261,8 @@ def game_3():
             screen.blit(score2_surface, score2_rect)  # 玩家2分數
             # 顯示題目
             screen.blit(question_surface, question_rect)
-
+            
+            countstext = str(countdown)
             for event in pygame.event.get():
                 # 顯示拍手
                 # player1按 s 鍵，player2按 k 鍵
@@ -242,9 +271,17 @@ def game_3():
                         show = 1
                     elif event.key == pygame.K_k:
                         show = 2
+                    elif event.key == pygame.K_1:
+                        game3 = False
                 # 關閉視窗
-                elif event.type == pygame.QUIT:
+                if event.type == pygame.QUIT:
                     pygame.quit()
+                if event.type == COUNT:
+                    countdown = countdown - 1
+                    countstext = str(countdown)
+                    if countdown == 0:
+                        game3 = False
+            show_time(countstext)
 
             # 顯示拍手
             if show == 1:
@@ -261,6 +298,7 @@ def game_3():
 width = 700
 height = 600
 screen = pygame.display.set_mode((width, height))
+update_rect = pygame.Rect(0, 300, 700, 250)
 pygame.display.set_caption('善挑')
 # image_rule0 = pygame.image.load()
 image_rule1 = pygame.image.load('第一關遊戲規則.png')
@@ -286,10 +324,11 @@ blank_window('Beginning')  # for 遊戲開始畫面
                 # game_intro(image_rule0)
 blank_window('Information')  # for 輸入玩家資訊
 game_intro(image_rule1)
-game_1()  # 按 k 鍵會跳下一頁
+game_1()  # 按數字 1 鍵會跳下一頁
 game_intro(image_rule2)
-game_2()  # 按 s 鍵會跳下一頁
+game_2()  # 按數字 1 鍵會跳下一頁
 game_intro(image_rule3)
-game_3()  # 按 k 鍵會跳下一頁
+game_3()  # 按數字 1 鍵會跳下一頁
 blank_window('Result')  # for 最終輸贏畫面
 blank_window('Leader Board')  # for 排行榜
+blank_window('Again?')
