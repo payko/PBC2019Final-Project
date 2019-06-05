@@ -321,7 +321,7 @@ score2_surface, score2_rect = set_score(score2, 2)
 
 #run
 blank_window('Beginning')  # for 遊戲開始畫面
-                # game_intro(image_rule0)
+                           # game_intro(image_rule0)
 blank_window('Information')  # for 輸入玩家資訊
 game_intro(image_rule1)
 game_1()  # 按數字 1 鍵會跳下一頁
