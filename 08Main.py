@@ -168,7 +168,7 @@ def game_1():
                 if event.type == COUNT:
                     countdown = countdown - 1
                     countstext = str(countdown)
-                    if countdown == -2:
+                    if countdown == -4:
                         game1 = False
 
             # 顯示拍手
@@ -269,7 +269,7 @@ def game_2():
                 if event.type == COUNT:
                     countdown = countdown - 1
                     countstext = str(countdown)
-                    if countdown == -2:
+                    if countdown == -4:
                         game2 = False
             # 倒數
             if countdown > 0:
@@ -323,7 +323,7 @@ def game_3():
                 if event.type == COUNT:
                     countdown = countdown - 1
                     countstext = str(countdown)
-                    if countdown == -2:
+                    if countdown == -4:
                         game3 = False
 
             # 顯示拍手
