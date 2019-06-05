@@ -6,64 +6,16 @@ COUNT = pygame.USEREVENT + 1
 pygame.time.set_timer(COUNT,1000)  # 每隔1秒發送一次自定義事件
 
 #functions for game windows
-def blank_window(string):
-    stay = True
-    background, black, white = set_color()
-    button_x = 500
-    button_y = 500
-    output_font = pygame.font.Font(None, 60)  # 字體大小 = 60
-    output_surface = output_font.render(string, False, black)
-    output_rect = output_surface.get_rect()
-    output_rect.center = (width / 2, height / 2)
-    while stay:
-        screen.fill(background) 
-        screen.blit(output_surface, output_rect)   
-        for event in pygame.event.get():
-            # 關閉視窗
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if 500 < mouse[0] < 630 and 515 < mouse[1] < 565: # 給button設定的範圍
-                    stay = False
-        screen.blit(image_start_button, (button_x, button_y))
-        pygame.display.flip()
-        mouse = pygame.mouse.get_pos()
-
-def prepare(string):
-    stay = True
-    background, black, white = set_color()
-    button_x = 500
-    button_y = 500
-    output_font = pygame.font.Font(None, 60)  # 字體大小 = 60
-    output_surface = output_font.render(string, False, black)
-    output_rect = output_surface.get_rect()
-    output_rect.center = (width / 2, height / 2)
-    while stay:
-        screen.fill(background) 
-        screen.blit(output_surface, output_rect)   
-        for event in pygame.event.get():
-            # 關閉視窗
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if 500 < mouse[0] < 630 and 515 < mouse[1] < 565: # 給start button設定的範圍
-                    stay = False
-        screen.blit(image_done_button, (button_x, button_y))  #button要換圖片
-        pygame.display.flip()
-        mouse = pygame.mouse.get_pos()
-
 def show_time(text, countdown):
     font = pygame.font.Font(None, 60)
-    font_big = pygame.font.Font(None, 72)
+    font_big = pygame.font.Font(None, 80)
     red = (255, 0, 0)
     if countdown <= 3:
         clock_surface = font_big.render(text, True, red)
     else:
         clock_surface = font.render(text, True, black)
     clock_rect = clock_surface.get_rect()
-    clock_rect.center = (width / 2, 200)
+    clock_rect.center = (width / 2, 160)
     screen.blit(clock_surface, clock_rect)
 
 def show_end():
@@ -74,23 +26,65 @@ def show_end():
     output_rect.center = (width / 2, height / 2)
     screen.blit(output_surface, output_rect)
 
-def game_intro(image_rule):
-    intro = True
-    screen.blit(image_rule, (0, 0))  # 顯示規則
-    button_x = 500
-    button_y = 500
-    while intro:
+def blank_window(string, image_button, background_image):
+    stay = True
+    screen.fill(background)
+    if background_image != None:
+        screen.blit(background_image, (0, 0))
+         
+    if string != None:
+        output_font = pygame.font.Font(None, 60)  # 字體大小 = 60
+        output_surface = output_font.render(string, False, black)
+        output_rect = output_surface.get_rect()
+        output_rect.center = (width / 2, height / 2)
+        screen.blit(output_surface, output_rect)   
+    while stay:
         for event in pygame.event.get():
             # 關閉視窗
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if 500 < mouse[0] < 630 and 515 < mouse[1] < 565: # 給start button設定的範圍
-                    intro = False
-        screen.blit(image_start_button, (button_x, button_y))
+                if 500 < mouse[0] < 630 and 515 < mouse[1] < 565: # 給button設定的範圍
+                    stay = False
+        screen.blit(image_button, (button_x, button_y))
         pygame.display.flip()
         mouse = pygame.mouse.get_pos()
+
+def prepare_window(string):
+    blank_window(string, image_done_button, None)
+
+def game_intro(image_rule):
+    blank_window(None, image_start_button, image_rule)
+
+def result_window(string):
+    blank_window(string, image_done_button, None)
+
+def board_window(string):
+    blank_window(string, image_done_button, None)
+
+def again_window(string):
+    stay = True
+    screen.fill(background)
+    output_font = pygame.font.Font(None, 60)  # 字體大小 = 60
+    output_surface = output_font.render(string, False, black)
+    output_rect = output_surface.get_rect()
+    output_rect.center = (width / 2, height / 2)
+    screen.blit(output_surface, output_rect)
+    while stay:
+        for event in pygame.event.get():
+            # 關閉視窗
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if 500 < mouse[0] < 630 and 515 < mouse[1] < 565: # 給button設定的範圍
+                    again = True
+                    stay = False
+        screen.blit(image_again_button, (button_x, button_y))
+        pygame.display.flip()
+        mouse = pygame.mouse.get_pos()
+    return again
 
 def set_color():
     background = (255, 246, 211)
@@ -168,7 +162,7 @@ def game_1():
                 if event.type == COUNT:
                     countdown = countdown - 1
                     countstext = str(countdown)
-                    if countdown == -4:
+                    if countdown == -3:
                         game1 = False
 
             # 顯示拍手
@@ -229,54 +223,12 @@ def game_2():
             screen.blit(image_up_before, (30 + 64 + 11.3, 223)) # 1-2
             screen.blit(image_up_before, (30 + 64 + 64 + 11.3 + 11.3, 223)) # 1-3
             screen.blit(image_up_before, (30 + 64 + 64 + 64 + 11.3 + 11.3 + 11.3, 223)) # 1-4
-            screen.blit(image_cover, (20, 220)) # 第一行遮罩 #好像用不到哈哈哈
-            screen.blit(image_up_before, (30, 220 + 70 + 3)) # 2-1
-            screen.blit(image_up_before, (30 + 64 + 11.3, 220 + 70 + 3)) # 2-2
-            screen.blit(image_up_before, (30 + 64 + 64 + 11.3 + 11.3, 220 + 70 + 3)) # 2-3
-            screen.blit(image_up_before, (30 + 64 + 64 + 64 + 11.3 + 11.3 + 11.3, 220 + 70 + 3)) # 2-4
-            screen.blit(image_cover, (20, 220+70)) # 第二行遮罩
-            screen.blit(image_up_before, (30, 220 + 70 + 70 + 3)) # 3-1
-            screen.blit(image_up_before, (30 + 64 + 11.3, 220 + 70 + 70 + 3)) # 3-2
-            screen.blit(image_up_before, (30 + 64 + 64 + 11.3 + 11.3, 220 + 70 + 70 + 3)) # 3-3
-            screen.blit(image_up_before, (30 + 64 + 64 + 64 + 11.3 + 11.3 + 11.3, 220 + 70 + 70 + 3)) # 3-4
-            screen.blit(image_cover, (20, 220+70+70)) # 第三行遮罩
-            screen.blit(image_up_before, (30, 220 + 70 + 70 + 70 + 3)) # 4-1
-            screen.blit(image_up_before, (30 + 64 + 11.3, 220 + 70 + 70 + 70 + 3)) # 4-2
-            screen.blit(image_up_before, (30 + 64 + 64 + 11.3 + 11.3, 220 + 70 + 70 + 70 + 3)) # 4-3
-            screen.blit(image_up_before, (30 + 64 + 64 + 64 + 11.3 + 11.3 + 11.3, 220 + 70 + 70 + 70 + 3)) # 4-4
-            screen.blit(image_cover, (20, 220+70+70+70)) # 第四行遮罩
-            screen.blit(image_up_before, (30, 220 + 70 + 70 + 70 + 70 + 3)) # 5-1
-            screen.blit(image_up_before, (30 + 64 + 11.3, 220 + 70 + 70 + 70 + 70 + 3)) # 5-2
-            screen.blit(image_up_before, (30 + 64 + 64 + 11.3 + 11.3, 220 + 70 + 70 + 70 + 70 + 3)) # 5-3
-            screen.blit(image_up_before, (30 + 64 + 64 + 64 + 11.3 + 11.3 + 11.3, 220 + 70 + 70 + 70 + 70 + 3)) # 5-4
-            screen.blit(image_cover, (20, 220+70+70+70+70)) # 第五行遮罩
             # 玩家2的圖示
             screen.blit(image_up_before, (30 + 350, 223)) # 1-1
             screen.blit(image_up_before, (30 + 64 + 11.3 + 350, 223)) # 1-2
             screen.blit(image_up_before, (30 + 64 + 64 + 11.3 + 11.3 + 350, 223)) # 1-3
             screen.blit(image_up_before, (30 + 64 + 64 + 64 + 11.3 + 11.3 + 11.3 + 350, 223)) # 1-4
-            screen.blit(image_cover, (20+350, 220)) # 第一行遮罩 #好像用不到哈哈哈
-            screen.blit(image_up_before, (30 + 350, 220 + 70 + 3)) # 2-1
-            screen.blit(image_up_before, (30 + 64 + 11.3 + 350, 220 + 70 + 3)) # 2-2
-            screen.blit(image_up_before, (30 + 64 + 64 + 11.3 + 11.3 + 350, 220 + 70 + 3)) # 2-3
-            screen.blit(image_up_before, (30 + 64 + 64 + 64 + 11.3 + 11.3 + 11.3 + 350, 220 + 70 + 3)) # 2-4
-            screen.blit(image_cover, (20+350, 220+70)) # 第二行遮罩
-            screen.blit(image_up_before, (30 + 350, 220 + 70 + 70 + 3)) # 3-1
-            screen.blit(image_up_before, (30 + 64 + 11.3 + 350, 220 + 70 + 70 + 3)) # 3-2
-            screen.blit(image_up_before, (30 + 64 + 64 + 11.3 + 11.3 + 350, 220 + 70 + 70 + 3)) # 3-3
-            screen.blit(image_up_before, (30 + 64 + 64 + 64 + 11.3 + 11.3 + 11.3 + 350, 220 + 70 + 70 + 3)) # 3-4
-            screen.blit(image_cover, (20+350, 220+70+70)) # 第三行遮罩
-            screen.blit(image_up_before, (30 + 350, 220 + 70 + 70 + 70 + 3)) # 4-1
-            screen.blit(image_up_before, (30 + 64 + 11.3 + 350, 220 + 70 + 70 + 70 + 3)) # 4-2
-            screen.blit(image_up_before, (30 + 64 + 64 + 11.3 + 11.3 + 350, 220 + 70 + 70 + 70 + 3)) # 4-3
-            screen.blit(image_up_before, (30 + 64 + 64 + 64 + 11.3 + 11.3 + 11.3 + 350, 220 + 70 + 70 + 70 + 3)) # 4-4
-            screen.blit(image_cover, (20+350, 220+70+70+70)) # 第四行遮罩
-            screen.blit(image_up_before, (30 + 350, 220 + 70 + 70 + 70 + 70 + 3)) # 5-1
-            screen.blit(image_up_before, (30 + 64 + 11.3 + 350, 220 + 70 + 70 + 70 + 70 + 3)) # 5-2
-            screen.blit(image_up_before, (30 + 64 + 64 + 11.3 + 11.3 + 350, 220 + 70 + 70 + 70 + 70 + 3)) # 5-3
-            screen.blit(image_up_before, (30 + 64 + 64 + 64 + 11.3 + 11.3 + 11.3 + 350, 220 + 70 + 70 + 70 + 70 + 3)) # 5-4
-            screen.blit(image_cover, (20+350, 220+70+70+70+70)) # 第五行遮罩
-
+            
             countstext = str(countdown)
             for event in pygame.event.get():
                 # 玩家按下相對按鍵，題目變色
@@ -310,7 +262,7 @@ def game_2():
                 if event.type == COUNT:
                     countdown = countdown - 1
                     countstext = str(countdown)
-                    if countdown == -4:
+                    if countdown == -3:
                         game2 = False
             # 倒數
             if countdown > 0:
@@ -364,7 +316,7 @@ def game_3():
                 if event.type == COUNT:
                     countdown = countdown - 1
                     countstext = str(countdown)
-                    if countdown == -4:
+                    if countdown == -3:
                         game3 = False
 
             # 顯示拍手
@@ -386,6 +338,8 @@ def game_3():
 #建立視窗
 width = 700
 height = 600
+button_x = 500
+button_y = 500
 screen = pygame.display.set_mode((width, height))
 update_rect = pygame.Rect(0, 300, 700, 250)
 pygame.display.set_caption('善挑')
@@ -411,15 +365,18 @@ score1_surface, score1_rect = set_score(score1, 1)
 score2_surface, score2_rect = set_score(score2, 2)
 
 #run
-blank_window('Beginning')  # for 遊戲開始畫面
-                           # game_intro(image_rule0)
-prepare('Information')  # for 輸入玩家資訊
-game_intro(image_rule1)
-game_1()  # 按數字 1 鍵會跳下一頁
-game_intro(image_rule2)
-game_2()  # 按數字 1 鍵會跳下一頁
-game_intro(image_rule3)
-game_3()  # 按數字 1 鍵會跳下一頁
-blank_window('Result')  # for 最終輸贏畫面
-blank_window('Leader Board')  # for 排行榜
-blank_window('Again?')
+again = True
+while again:
+    again = False
+    blank_window('Beginning', image_start_button, None)  # for 遊戲開始畫面
+                                # game_intro(image_rule0)
+    prepare_window('Information')  # for 輸入玩家資訊
+    game_intro(image_rule1)
+    game_1()  # 按數字 1 鍵會跳下一頁
+    game_intro(image_rule2)
+    game_2()  # 按數字 1 鍵會跳下一頁
+    game_intro(image_rule3)
+    game_3()  # 按數字 1 鍵會跳下一頁
+    result_window('Result')  # for 最終輸贏畫面
+    board_window('Leader Board')  # for 排行榜
+    again = again_window('Again?')
