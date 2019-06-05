@@ -12,7 +12,7 @@ def blank_window(string):
     button_x = 500
     button_y = 500
     output_font = pygame.font.Font(None, 60)  # 字體大小 = 60
-    output_surface = output_font.render(string, False, black)  ## Question更改為隨機數字
+    output_surface = output_font.render(string, False, black)
     output_rect = output_surface.get_rect()
     output_rect.center = (width / 2, height / 2)
     while stay:
@@ -36,7 +36,7 @@ def prepare(string):
     button_x = 500
     button_y = 500
     output_font = pygame.font.Font(None, 60)  # 字體大小 = 60
-    output_surface = output_font.render(string, False, black)  ## Question更改為隨機數字
+    output_surface = output_font.render(string, False, black)
     output_rect = output_surface.get_rect()
     output_rect.center = (width / 2, height / 2)
     while stay:
