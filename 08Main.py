@@ -24,18 +24,55 @@ def blank_window(string):
                 pygame.quit()
                 quit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if 500 < mouse[0] < 630 and 515 < mouse[1] < 565: # 給start button設定的範圍
+                if 500 < mouse[0] < 630 and 515 < mouse[1] < 565: # 給button設定的範圍
                     stay = False
-        screen.blit(image_start_button, (button_x, button_y))  #button要換圖片
+        screen.blit(image_start_button, (button_x, button_y))
         pygame.display.flip()
         mouse = pygame.mouse.get_pos()
 
-def show_time(text):
-    fontbigObj = pygame.font.Font(None, 32)
-    clock_surface = fontbigObj.render(text, True, black)
+def prepare(string):
+    stay = True
+    background, black, white = set_color()
+    button_x = 500
+    button_y = 500
+    output_font = pygame.font.Font(None, 60)  # 字體大小 = 60
+    output_surface = output_font.render(string, False, black)  ## Question更改為隨機數字
+    output_rect = output_surface.get_rect()
+    output_rect.center = (width / 2, height / 2)
+    while stay:
+        screen.fill(background) 
+        screen.blit(output_surface, output_rect)   
+        for event in pygame.event.get():
+            # 關閉視窗
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if 500 < mouse[0] < 630 and 515 < mouse[1] < 565: # 給start button設定的範圍
+                    stay = False
+        screen.blit(image_done_button, (button_x, button_y))  #button要換圖片
+        pygame.display.flip()
+        mouse = pygame.mouse.get_pos()
+
+def show_time(text, countdown):
+    font = pygame.font.Font(None, 60)
+    font_big = pygame.font.Font(None, 72)
+    red = (255, 0, 0)
+    if countdown <= 3:
+        clock_surface = font_big.render(text, True, red)
+    else:
+        clock_surface = font.render(text, True, black)
     clock_rect = clock_surface.get_rect()
     clock_rect.center = (width / 2, 200)
     screen.blit(clock_surface, clock_rect)
+
+def show_end():
+    font_big = pygame.font.Font(None, 150)
+    red = (255, 0, 0)
+    output_surface = font_big.render("Time's Up!!", True, red)
+    output_rect = output_surface.get_rect()
+    output_rect.center = (width / 2, height / 2)
+    screen.blit(output_surface, output_rect)
 
 def game_intro(image_rule):
     intro = True
@@ -131,7 +168,7 @@ def game_1():
                 if event.type == COUNT:
                     countdown = countdown - 1
                     countstext = str(countdown)
-                    if countdown == 0:
+                    if countdown == -2:
                         game1 = False
 
             # 顯示拍手
@@ -139,8 +176,11 @@ def game_1():
                 screen.blit(clap, (50, 350))
             elif show == 2:
                 screen.blit(clap, (width - 50 - 260, 350))
-            
-            show_time(countstext)
+            # 倒數
+            if countdown > 0:
+                show_time(countstext, countdown)
+            else:
+                show_end()
             pygame.display.update()
 
 def game_2():
@@ -229,9 +269,13 @@ def game_2():
                 if event.type == COUNT:
                     countdown = countdown - 1
                     countstext = str(countdown)
-                    if countdown == 0:
+                    if countdown == -2:
                         game2 = False
-            show_time(countstext)
+            # 倒數
+            if countdown > 0:
+                show_time(countstext, countdown)
+            else:
+                show_end()
             pygame.display.flip()
 
 def game_3():
@@ -279,9 +323,8 @@ def game_3():
                 if event.type == COUNT:
                     countdown = countdown - 1
                     countstext = str(countdown)
-                    if countdown == 0:
+                    if countdown == -2:
                         game3 = False
-            show_time(countstext)
 
             # 顯示拍手
             if show == 1:
@@ -290,6 +333,11 @@ def game_3():
                 screen.blit(clap, (width - 50 - 260, 350))
                 game3 = False
         
+            # 倒數
+            if countdown > 0:
+                show_time(countstext, countdown)
+            else:
+                show_end()
             pygame.display.flip()
 
 
@@ -305,6 +353,8 @@ image_rule1 = pygame.image.load('第一關遊戲規則.png')
 image_rule2 = pygame.image.load('第二關遊戲規則.png')
 image_rule3 = pygame.image.load('第三關遊戲規則.png')
 image_start_button = pygame.image.load('開始按鈕.png')
+image_done_button = pygame.image.load('準備完成.png')
+image_again_button = pygame.image.load('再來一次.png')
 
 background, black, white = set_color()
 size = 140
@@ -322,7 +372,7 @@ score2_surface, score2_rect = set_score(score2, 2)
 #run
 blank_window('Beginning')  # for 遊戲開始畫面
                            # game_intro(image_rule0)
-blank_window('Information')  # for 輸入玩家資訊
+prepare('Information')  # for 輸入玩家資訊
 game_intro(image_rule1)
 game_1()  # 按數字 1 鍵會跳下一頁
 game_intro(image_rule2)
