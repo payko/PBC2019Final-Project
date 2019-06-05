@@ -344,7 +344,7 @@ pygame.display.set_caption('善挑')
 image_rule1 = pygame.image.load('第一關遊戲規則.png')
 image_rule2 = pygame.image.load('第二關遊戲規則.png')
 image_rule3 = pygame.image.load('第三關遊戲規則.png')
-image_start_button = pygame.image.load('開始按鈕.png')
+image_start_button = pygame.image.load('遊戲開始.png')
 image_done_button = pygame.image.load('準備完成.png')
 image_again_button = pygame.image.load('再來一次.png')
 
