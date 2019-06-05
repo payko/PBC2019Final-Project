@@ -1,6 +1,10 @@
+
+
+# Problem: 鏡頭size不會調成正方形& 拍照後導到下一個畫面的頭貼裡
 import cv2
 
-def rescale_frame(frame, percent=75):
+def rescale_frame(frame, percent=75): 
+    '''調整鏡頭大小'''
     width = int(frame.shape[1] * percent/ 100)
     height = int(frame.shape[0] * percent/ 100)
     dim = (width, height)
@@ -8,7 +12,7 @@ def rescale_frame(frame, percent=75):
 
 def capture():
     take = True
-    times = 2
+    times = 2 # 拍兩次後自動關閉
     cam = cv2.VideoCapture(0)
     cv2.namedWindow("webcam")
     img_counter = 0
