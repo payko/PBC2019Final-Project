@@ -1,10 +1,11 @@
 import pygame
+import csv
 
 pygame.init()
 COUNT = pygame.USEREVENT + 1
 pygame.time.set_timer(COUNT,1000)  # 每隔1秒發送一次自定義事件
 
-#functions for game windows
+# functions for countdown
 def show_time(text, countdown):
     font = pygame.font.Font(None, 60)
     font_big = pygame.font.Font(None, 80)
@@ -25,6 +26,30 @@ def show_end():
     output_rect.center = (width / 2, height / 2)
     screen.blit(output_surface, output_rect)
 
+# functions for leader board
+def compared(n1, s1, n2, s2, want):
+    # input: 玩家名稱、得分、回傳winner(want = 'w')、回傳loser(want = 'l')
+    if (s1 >= s2 and want == 'w') or (s1 < s2 and want == 'l'):
+        return n1, s1
+    return n2, s2
+
+def write_board(name, score, Board):
+    # 把一位玩家的結果記入排行榜
+    for i in range(1, len(Board)):
+        if Board[i][1] == '':
+            Board[i][1] = name
+            Board[i][2] = score
+            break
+        elif score >= int(Board[i][2]):
+            for k in range(1, len(Board) - i):
+                Board[-k][1] = Board[-(k + 1)][1]
+                Board[-k][2] = Board[-(k + 1)][2]
+            Board[i][1] = name
+            Board[i][2] = score
+            break
+    return Board
+
+# functions for create windows
 def blank_window(string, image_button, background_image):
     stay = True
     screen.fill(background)
@@ -49,6 +74,7 @@ def blank_window(string, image_button, background_image):
         screen.blit(image_button, (button_x, button_y))
         pygame.display.flip()
         mouse = pygame.mouse.get_pos()
+
 def prepare_window(string):
     blank_window(string, image_done_button, None)
 
@@ -58,8 +84,54 @@ def game_intro(image_rule):
 def result_window(string):
     blank_window(string, image_next_button, None)
 
-def board_window(string):
-    blank_window(string, image_next_button, None)
+def board_window(wn, ws, ln, ls):
+    #input: 贏家名字、得分、輸家名字、得分
+    stay = True
+    screen.fill(background)
+    # screen.blit(background_image, (0, 0))
+    # 之後補上
+    
+    # 讀入舊的排行榜
+    r_file = open('排行榜.csv', 'r', newline = '', encoding = 'utf-8') 
+    board = csv.reader(r_file) 
+    Board = []
+    for row in board:
+        Board.append(row)
+    Board[0] = ['Rank', 'Player', 'Score']
+    r_file.close()
+
+    # 製造新的排行榜
+    Board = write_board(wname, wscore, Board)
+    Board = write_board(lname, lscore, Board)
+
+    # 寫入新的排行榜
+    w_file = open('排行榜.csv', 'w', newline = '', encoding = 'utf-8')
+    board_writer = csv.writer(w_file)
+    for row in Board:
+        board_writer.writerow(row)
+    w_file.close()
+
+    output_font = pygame.font.Font(None, 48)  # 字體大小 = 60
+    for i in range(6):
+        rank = str(Board[i][0])
+        player = str(Board[i][1])
+        score = str(Board[i][2])
+        output_surface = output_font.render('%s%15s%10s' % (rank, player, score), False, black)
+        output_rect = output_surface.get_rect()
+        output_rect.center = (width / 2, 100 + 50*i)
+        screen.blit(output_surface, output_rect)   
+    while stay:
+        for event in pygame.event.get():
+            # 關閉視窗
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if 500 < mouse[0] < 630 and 515 < mouse[1] < 565: # 給button設定的範圍
+                     stay = False
+        screen.blit(image_next_button, (button_x, button_y))
+        pygame.display.flip()
+        mouse = pygame.mouse.get_pos()
 
 def again_window(string):
     stay = True
@@ -88,6 +160,7 @@ def again_window(string):
         mouse = pygame.mouse.get_pos()
     return again
 
+# for game windows setting
 def set_color():
     background = (255, 246, 211)
     black = (0, 0, 0)
@@ -112,7 +185,7 @@ def set_score(score, num):
     size = 140
     # 設定分數
     score_font = pygame.font.Font(None, 32)  # 字體大小 = 32
-    score_surface = score_font.render(score, False, black)  # 玩家1分數
+    score_surface = score_font.render(str(score), False, black)  # 玩家1分數
     score_rect = score_surface.get_rect()
     if num == 1:
         score_rect.center = (20 + size + 50, 50)
@@ -120,6 +193,7 @@ def set_score(score, num):
         score_rect.center = (width - 20 - size - 50, 50)
     return score_surface, score_rect
 
+# for game runnung
 def game_1():
     game1 = True
     countdown = 60
@@ -362,8 +436,8 @@ name2 = 'Name2'
 player1_surface, player1_rect = set_player(name1, 1)
 player2_surface, player2_rect = set_player(name2, 2)
 # 設定分數
-score1 = 'Score1'
-score2 = 'Score2'
+score1 = 10
+score2 = 20
 score1_surface, score1_rect = set_score(score1, 1)
 score2_surface, score2_rect = set_score(score2, 2)
 
@@ -380,6 +454,11 @@ while again:
     game_2()  # 按數字 1 鍵會跳下一頁
     game_intro(image_rule3)
     game_3()  # 按數字 1 鍵會跳下一頁
+
+    # 判斷輸家贏家
+    wname, wscore = compared(name1, score1, name2, score2, 'w')
+    lname, lscore = compared(name1, score1, name2, score2, 'l')
+    
     result_window('Result')  # for 最終輸贏畫面
-    board_window('Leader Board')  # for 排行榜
+    board_window(wname, wscore, lname, lscore)  # for 排行榜
     again = again_window('Again?')
