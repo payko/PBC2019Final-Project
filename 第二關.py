@@ -28,7 +28,7 @@ def show_cover(active, player):
             y = 150 + 70*i
         screen.blit(image_cover, (x, y)) # 第二行遮罩
 
-def next_pos(i, j):
+def next_pos(i, j, index):
     if j == 3:
         if i == 4:
             index = 1
@@ -37,7 +37,7 @@ def next_pos(i, j):
             j = 0
     else:
         j += 1
-    return i, j
+    return i, j, index
 
 # 建立第一關遊戲視窗
 width = 700
@@ -117,41 +117,32 @@ while True: # 遊戲迴圈
             pygame.quit()
 
     pygame.display.flip()
-    #隨機產生0-7之亂數
-    num = []
-    for i in range(5):
-        num.append([])
-        for j in range(4):
-            r = random.randint(0,7)
-            num[-1].append(r)
-    for i in range(5):
-        num.append(num[i])
 
-
-    active1 = 1  # 玩家一按到第幾行
-    active2 = 1  # 玩家二按到第幾行
     while True:
-        # 顯示題目
-        show_icons(num, player = 1)
-        show_icons(num, player = 2)
-        
-        # 顯示遮罩
-        show_cover(active1, player = 1)
-        show_cover(active2, player = 2)
-   
-        for event in pygame.event.get():
-            # 關閉視窗
-            if event.type == pygame.QUIT:
-                pygame.quit()
-        
-        pygame.display.flip()
-        
+        #隨機產生0-7之亂數
+        num = []
+        for i in range(5):
+            num.append([])
+            for j in range(4):
+                r = random.randint(0,7)
+                num[-1].append(r)
+        for i in range(5):
+            num.append(num[i])
         #判斷是否為5-4圖示的index
-        index = 0
-		
+        index = 0		
         #從1-1開始玩
         i, j, k, l = 0, 0, 5, 0
         while True:
+            # 顯示題目
+            show_icons(num, player = 1)
+            show_icons(num, player = 2)
+        
+            # 顯示遮罩
+            show_cover(i + 1, player = 1)
+            show_cover(k - 4, player = 2)
+            
+            pygame.display.flip()
+
             # 玩家按下相對按鍵，題目變色
             if index == 1:
                break
@@ -163,12 +154,12 @@ while True: # 遊戲迴圈
                         or (event.key == pygame.K_a and (num[i][j] == 2 or num[i][j] == 6))\
                         or (event.key == pygame.K_d and (num[i][j] == 3 or num[i][j] == 7)):
                         num[i][j] += 7  # 變成after的圖示
-                        i, j = next_pos(i, j)
+                        i, j, index = next_pos(i, j, index)
                     if (event.key == pygame.K_UP and (num[k][l] == 0 or num[k][l] == 4))\
                         or (event.key == pygame.K_DOWN and (num[k][l] == 1 or num[k][l] == 5))\
                         or (event.key == pygame.K_LEFT and (num[k][l] == 2 or num[k][l] == 6))\
                         or (event.key == pygame.K_RIGHT and (num[k][l] == 3 or num[k][l] == 7)):
                         num[k][l] += 7
-                        k, l = next_pos(k, l)
+                        k, l, index = next_pos(k, l, index)
                 if event.type == pygame.QUIT:
                     pygame.quit()
