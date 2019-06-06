@@ -11,10 +11,12 @@ def show_icons(num, player):
             if player == 1:
                 x = 30 + 75.3*j
                 y = 223 + 70*i
+                screen.blit(imagelist[num[i][j]], (x, y))
             else:
                 x = 380 + 75.3*j
                 y = 223 + 70*i
-            screen.blit(imagelist[num[i if player == 1 else k][j]], (x, y))
+                screen.blit(imagelist[num[k][j]], (x, y))
+            
 
 def show_cover(active, player):
     for i in range(1,6):
@@ -95,22 +97,7 @@ imagelist = [image_up_before, image_down_before, image_left_before, image_right_
 
 
 while True: # 遊戲迴圈
-    screen.fill(background)
-
-    # 顯示玩家
-    pygame.draw.rect(screen, white, (20, 20, size, size+20), 2) # 玩家1頭像
-    screen.blit(player1_surface, player1_rect) # 玩家1名稱
-    pygame.draw.rect(screen, white, (width-20-size, 20, size, 20+size), 2) # 玩家2頭像
-    screen.blit(player2_surface, player2_rect) # 玩家2名稱
-
-    # 顯示分數
-    screen.blit(score1_surface, score1_rect) # 玩家1分數
-    screen.blit(score2_surface, score2_rect) # 玩家2分數
-
-    # 顯示題目
-    pygame.draw.rect(screen, orange, (20, 220, width/2-40, 350), 2) # 玩家1題目框框 310*350
-    pygame.draw.rect(screen, orange, (width/2+20, 220, width/2-40, 350), 2) # 玩家2題目框框 310*350
-
+    
     for event in pygame.event.get():
         # 關閉視窗
         if event.type == pygame.QUIT:
@@ -133,6 +120,21 @@ while True: # 遊戲迴圈
         #從1-1開始玩
         i, j, k, l = 0, 0, 5, 0
         while True:
+            screen.fill(background)
+            # 顯示玩家
+            pygame.draw.rect(screen, white, (20, 20, size, size+20), 2) # 玩家1頭像
+            screen.blit(player1_surface, player1_rect) # 玩家1名稱
+            pygame.draw.rect(screen, white, (width-20-size, 20, size, 20+size), 2) # 玩家2頭像
+            screen.blit(player2_surface, player2_rect) # 玩家2名稱
+
+            # 顯示分數
+            screen.blit(score1_surface, score1_rect) # 玩家1分數
+            screen.blit(score2_surface, score2_rect) # 玩家2分數
+
+            # 顯示題目
+            pygame.draw.rect(screen, orange, (20, 220, width/2-40, 350), 2) # 玩家1題目框框 310*350
+            pygame.draw.rect(screen, orange, (width/2+20, 220, width/2-40, 350), 2) # 玩家2題目框框 310*350
+
             # 顯示題目
             show_icons(num, player = 1)
             show_icons(num, player = 2)
@@ -153,13 +155,13 @@ while True: # 遊戲迴圈
                         or (event.key == pygame.K_s and (num[i][j] == 1 or num[i][j] == 5))\
                         or (event.key == pygame.K_a and (num[i][j] == 2 or num[i][j] == 6))\
                         or (event.key == pygame.K_d and (num[i][j] == 3 or num[i][j] == 7)):
-                        num[i][j] += 7  # 變成after的圖示
+                        num[i][j] += 8  # 變成after的圖示
                         i, j, index = next_pos(i, j, index)
                     if (event.key == pygame.K_UP and (num[k][l] == 0 or num[k][l] == 4))\
                         or (event.key == pygame.K_DOWN and (num[k][l] == 1 or num[k][l] == 5))\
                         or (event.key == pygame.K_LEFT and (num[k][l] == 2 or num[k][l] == 6))\
                         or (event.key == pygame.K_RIGHT and (num[k][l] == 3 or num[k][l] == 7)):
-                        num[k][l] += 7
+                        num[k][l] += 8
                         k, l, index = next_pos(k, l, index)
                 if event.type == pygame.QUIT:
                     pygame.quit()
