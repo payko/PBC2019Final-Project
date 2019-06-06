@@ -2,20 +2,17 @@ import pygame, random
 
 pygame.init()
 
-def show_icons(num, player):
-    # input: a list, an int(1 or 2)
-    for i in range(5):
-        if player == 2:
-            k = i + 5
+def show_icons(num):
+    # input: a list
+    for i in range(10):
         for j in range(4):
-            if player == 1:
+            if i < 5:
                 x = 30 + 75.3*j
                 y = 223 + 70*i
-                screen.blit(imagelist[num[i][j]], (x, y))
             else:
                 x = 380 + 75.3*j
-                y = 223 + 70*i
-                screen.blit(imagelist[num[k][j]], (x, y))
+                y = 223 + 70*(i - 5)
+            screen.blit(imagelist[num[i][j]], (x, y))
             
 
 def show_cover(active, player):
@@ -40,6 +37,18 @@ def next_pos(i, j, index):
     else:
         j += 1
     return i, j, index
+
+def new_question():
+    # input: a list
+    num = []
+    for i in range(5):
+        num.append([])
+        for j in range(4):
+            r = random.randint(0,7)
+            num[-1].append(r)
+    for i in range(5):
+        num.append(num[i])
+    return num
 
 # 建立第一關遊戲視窗
 width = 700
@@ -97,24 +106,10 @@ imagelist = [image_up_before, image_down_before, image_left_before, image_right_
 
 
 while True: # 遊戲迴圈
-    
-    for event in pygame.event.get():
-        # 關閉視窗
-        if event.type == pygame.QUIT:
-            pygame.quit()
-
-    pygame.display.flip()
 
     while True:
         #隨機產生0-7之亂數
-        num = []
-        for i in range(5):
-            num.append([])
-            for j in range(4):
-                r = random.randint(0,7)
-                num[-1].append(r)
-        for i in range(5):
-            num.append(num[i])
+        num = new_question()
         #判斷是否為5-4圖示的index
         index = 0		
         #從1-1開始玩
@@ -136,8 +131,7 @@ while True: # 遊戲迴圈
             pygame.draw.rect(screen, orange, (width/2+20, 220, width/2-40, 350), 2) # 玩家2題目框框 310*350
 
             # 顯示題目
-            show_icons(num, player = 1)
-            show_icons(num, player = 2)
+            show_icons(num)
         
             # 顯示遮罩
             show_cover(i + 1, player = 1)
@@ -151,13 +145,15 @@ while True: # 遊戲迴圈
             #上或反下的時候
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
+                    key_pressed = pygame.key.get_pressed()
+                    
                     if (event.key == pygame.K_w and (num[i][j] == 0 or num[i][j] == 4))\
                         or (event.key == pygame.K_s and (num[i][j] == 1 or num[i][j] == 5))\
                         or (event.key == pygame.K_a and (num[i][j] == 2 or num[i][j] == 6))\
                         or (event.key == pygame.K_d and (num[i][j] == 3 or num[i][j] == 7)):
                         num[i][j] += 8  # 變成after的圖示
                         i, j, index = next_pos(i, j, index)
-                    if (event.key == pygame.K_UP and (num[k][l] == 0 or num[k][l] == 4))\
+                    elif (event.key == pygame.K_UP and (num[k][l] == 0 or num[k][l] == 4))\
                         or (event.key == pygame.K_DOWN and (num[k][l] == 1 or num[k][l] == 5))\
                         or (event.key == pygame.K_LEFT and (num[k][l] == 2 or num[k][l] == 6))\
                         or (event.key == pygame.K_RIGHT and (num[k][l] == 3 or num[k][l] == 7)):
