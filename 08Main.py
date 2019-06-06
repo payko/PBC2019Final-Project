@@ -56,10 +56,10 @@ def game_intro(image_rule):
     blank_window(None, image_start_button, image_rule)
 
 def result_window(string):
-    blank_window(string, image_done_button, None)
+    blank_window(string, image_next_button, None)
 
 def board_window(string):
-    blank_window(string, image_done_button, None)
+    blank_window(string, image_next_button, None)
 
 def again_window(string):
     stay = True
@@ -76,10 +76,14 @@ def again_window(string):
                 pygame.quit()
                 quit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if 500 < mouse[0] < 630 and 515 < mouse[1] < 565: # 給button設定的範圍
+                if 500 < mouse[0] < 630 and 515 < mouse[1] < 565: # 給Again button設定的範圍
                     again = True
                     stay = False
+                elif 280 < mouse[0] < 430 and 515 < mouse[1] < 565: # 給End button設定的範圍
+                    again = False
+                    stay = False
         screen.blit(image_again_button, (button_x, button_y))
+        screen.blit(image_end_button, (width / 2 - 40, 507))
         pygame.display.flip()
         mouse = pygame.mouse.get_pos()
     return again
@@ -346,7 +350,9 @@ image_rule2 = pygame.image.load('第二關遊戲規則.png')
 image_rule3 = pygame.image.load('第三關遊戲規則.png')
 image_start_button = pygame.image.load('遊戲開始.png')
 image_done_button = pygame.image.load('準備完成.png')
+image_next_button = pygame.image.load('下一頁.png')
 image_again_button = pygame.image.load('再來一次.png')
+image_end_button = pygame.image.load('遊戲結束.png')
 
 background, black, white = set_color()
 size = 140
