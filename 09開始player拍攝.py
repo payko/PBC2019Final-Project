@@ -2,8 +2,11 @@
 
 # Problem: 鏡頭size不會調成正方形& 拍照後導到下一個畫面的頭貼裡
 import cv2
+from PIL import Image
+import os
 
-def rescale_frame(frame, percent=75): 
+
+def rescale_frame(frame, percent=75):
     '''調整鏡頭大小'''
     width = int(frame.shape[1] * percent/ 100)
     height = int(frame.shape[0] * percent/ 100)
@@ -30,11 +33,11 @@ def capture():
             take = False
         k = cv2.waitKey(1)
 
-        if k%256 == 27:
+        if k % 256 == 27:
             # ESC pressed
             print("Escape hit, closing...")
             take = False
-        elif k%256 == 32:
+        elif k % 256 == 32:
             # SPACE pressed
             times -= 1
             img_name = "capture_{}.png".format(img_counter)
@@ -47,4 +50,17 @@ def capture():
     cam.release()
     cv2.destroyAllWindows()
 
+def croppic():
+    img_player1 = Image.open('capture_0.png')
+    img_player2 = Image.open('capture_1.png')
+    white = Image.open('white.png')
+    newimg_player1 = img_player1.crop((70, 0, 314, 200)) # 左上右下
+    newimg_player2 = img_player2.crop((70, 0, 314, 200))
+    white.paste(newimg_player1, (10, 10))
+    white.save('player1.png')
+    white.paste(newimg_player2, (10, 10))
+    white.save('player2.png')
+
 capture()
+croppic()
+
