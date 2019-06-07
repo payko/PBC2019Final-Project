@@ -380,7 +380,6 @@ def game_2():
             
             pygame.display.flip()
 
-            # 玩家按下相對按鍵，題目變色
             if index == 1:  # if index == 0, 刷新題目
                 break
             
@@ -388,8 +387,6 @@ def game_2():
             for event in pygame.event.get():
                 # 玩家按下相對按鍵，題目變色
                 if event.type == pygame.KEYDOWN:
-                    key_pressed = pygame.key.get_pressed()
-                    
                     if (event.key == pygame.K_w and (num[i][j] == 0 or num[i][j] == 4))\
                         or (event.key == pygame.K_s and (num[i][j] == 1 or num[i][j] == 5))\
                         or (event.key == pygame.K_a and (num[i][j] == 2 or num[i][j] == 6))\
