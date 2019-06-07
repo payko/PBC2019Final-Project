@@ -118,60 +118,60 @@ imagelist = [image_up_before, image_down_before, image_left_before, image_right_
              image_down_after_reverse, image_up_after_reverse,image_right_after_reverse, image_left_after_reverse]
 
 
-while True: # 遊戲迴圈
 
+
+while True:
+    #隨機產生0-7之亂數
+    num = new_question()
+    #判斷是否為5-4圖示的index
+    index = 0		
+    #從1-1開始玩
+    i, j, k, l = 0, 0, 5, 0
     while True:
-        #隨機產生0-7之亂數
-        num = new_question()
-        #判斷是否為5-4圖示的index
-        index = 0		
-        #從1-1開始玩
-        i, j, k, l = 0, 0, 5, 0
-        while True:
-            screen.fill(background)
-            # 顯示玩家
-            pygame.draw.rect(screen, white, (20, 20, size, size+20), 2) # 玩家1頭像
-            screen.blit(player1_surface, player1_rect) # 玩家1名稱
-            pygame.draw.rect(screen, white, (width-20-size, 20, size, 20+size), 2) # 玩家2頭像
-            screen.blit(player2_surface, player2_rect) # 玩家2名稱
+        screen.fill(background)
+        # 顯示玩家
+        pygame.draw.rect(screen, white, (20, 20, size, size+20), 2) # 玩家1頭像
+        screen.blit(player1_surface, player1_rect) # 玩家1名稱
+        pygame.draw.rect(screen, white, (width-20-size, 20, size, 20+size), 2) # 玩家2頭像
+        screen.blit(player2_surface, player2_rect) # 玩家2名稱
 
-            # 顯示分數
-            screen.blit(score1_surface, score1_rect) # 玩家1分數
-            screen.blit(score2_surface, score2_rect) # 玩家2分數
+        # 顯示分數
+        screen.blit(score1_surface, score1_rect) # 玩家1分數
+        screen.blit(score2_surface, score2_rect) # 玩家2分數
 
-            # 顯示題目
-            pygame.draw.rect(screen, orange, (20, 220, width/2-40, 350), 2) # 玩家1題目框框 310*350
-            pygame.draw.rect(screen, orange, (width/2+20, 220, width/2-40, 350), 2) # 玩家2題目框框 310*350
+        # 顯示題目
+        pygame.draw.rect(screen, orange, (20, 220, width/2-40, 350), 2) # 玩家1題目框框 310*350
+        pygame.draw.rect(screen, orange, (width/2+20, 220, width/2-40, 350), 2) # 玩家2題目框框 310*350
 
-            # 顯示題目
-            show_icons(num)
+        # 顯示題目
+        show_icons(num)
         
-            # 顯示遮罩
-            show_cover(i + 1, player = 1)
-            show_cover(k - 4, player = 2)
+        # 顯示遮罩
+        show_cover(i + 1, player = 1)
+        show_cover(k - 4, player = 2)
             
-            pygame.display.flip()
+        pygame.display.flip()
 
-            # 玩家按下相對按鍵，題目變色
-            if index == 1:
-               break
-            #上或反下的時候
-            for event in pygame.event.get():
-                if event.type == pygame.KEYDOWN:
-                    key_pressed = pygame.key.get_pressed()
+        # 玩家按下相對按鍵，題目變色
+        if index == 1:
+           break
+        #上或反下的時候
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                key_pressed = pygame.key.get_pressed()
                     
-                    if (event.key == pygame.K_w and (num[i][j] == 0 or num[i][j] == 4))\
-                        or (event.key == pygame.K_s and (num[i][j] == 1 or num[i][j] == 5))\
-                        or (event.key == pygame.K_a and (num[i][j] == 2 or num[i][j] == 6))\
-                        or (event.key == pygame.K_d and (num[i][j] == 3 or num[i][j] == 7)):
-                        num[i][j] += 8  # 變成after的圖示
-                        print(num)
-                        i, j, index = next_pos(i, j, index, player = 1)
-                    elif (event.key == pygame.K_UP and (num[k][l] == 0 or num[k][l] == 4))\
-                        or (event.key == pygame.K_DOWN and (num[k][l] == 1 or num[k][l] == 5))\
-                        or (event.key == pygame.K_LEFT and (num[k][l] == 2 or num[k][l] == 6))\
-                        or (event.key == pygame.K_RIGHT and (num[k][l] == 3 or num[k][l] == 7)):
-                        num[k][l] += 8
-                        k, l, index = next_pos(k, l, index, player = 2)
-                if event.type == pygame.QUIT:
-                    pygame.quit()
+                if (event.key == pygame.K_w and (num[i][j] == 0 or num[i][j] == 4))\
+                    or (event.key == pygame.K_s and (num[i][j] == 1 or num[i][j] == 5))\
+                    or (event.key == pygame.K_a and (num[i][j] == 2 or num[i][j] == 6))\
+                    or (event.key == pygame.K_d and (num[i][j] == 3 or num[i][j] == 7)):
+                    num[i][j] += 8  # 變成after的圖示
+                    print(num)
+                    i, j, index = next_pos(i, j, index, player = 1)
+                elif (event.key == pygame.K_UP and (num[k][l] == 0 or num[k][l] == 4))\
+                    or (event.key == pygame.K_DOWN and (num[k][l] == 1 or num[k][l] == 5))\
+                    or (event.key == pygame.K_LEFT and (num[k][l] == 2 or num[k][l] == 6))\
+                    or (event.key == pygame.K_RIGHT and (num[k][l] == 3 or num[k][l] == 7)):
+                    num[k][l] += 8
+                    k, l, index = next_pos(k, l, index, player = 2)
+            if event.type == pygame.QUIT:
+                pygame.quit()
