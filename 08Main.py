@@ -350,7 +350,7 @@ def game_2():
     while game2:
         #隨機產生0-7之亂數
         num = new_question(number)
-        if number <= 5
+        if number <= 5:
             number += 1
         #判斷是否為5-4圖示的index
         index = 0		
@@ -378,12 +378,18 @@ def game_2():
             show_cover(num, image_cover, i + 1, player = 1)
             show_cover(num, image_cover, k - int(len(num)/2) + 1, player = 2)
             
+            countstext = str(countdown)
+            if countdown > 0:
+                show_time(countstext, countdown)
+            else:
+                show_end()
+
             pygame.display.flip()
 
             if index == 1:  # if index == 0, 刷新題目
                 break
             
-            countstext = str(countdown)
+            
             for event in pygame.event.get():
                 # 玩家按下相對按鍵，題目變色
                 if event.type == pygame.KEYDOWN:
@@ -407,11 +413,7 @@ def game_2():
                     if countdown == -3:
                         game2 = False
             # 倒數
-            if countdown > 0:
-                show_time(countstext, countdown)
-            else:
-                show_end()
-            pygame.display.flip()
+
 
 def game_3():
     game3 = True
