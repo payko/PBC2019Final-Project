@@ -450,6 +450,8 @@ def game_2():
                             or (event.key == pygame.K_RIGHT and (num[k][l] == 3 or num[k][l] == 7)):
                         num[k][l] += 8
                         k, l, index = next_pos(num, k, l, index, player=2)
+                    elif event.key == pygame.K_1:
+                        game2 = False
                 if event.type == pygame.QUIT:
                     pygame.quit()
                 if event.type == COUNT:
