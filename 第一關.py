@@ -7,7 +7,7 @@ def button(x, y):
 button_x = 500
 button_y = 500
 
-def game_intro1():
+def game_intro():
     intro = True
 	
     # 顯示規則
@@ -59,7 +59,7 @@ class Game_1():
         # 設定題目
             self.random_ = random.randint(0,1000)
             self.question_font = pygame.font.Font(None, 60)  # 字體大小 = 60
-            self.question_surface = self.question_font.render(str(self.random_), False, self.black)  ## Question更改為隨機數字
+            self.question_surface = self.question_font.render(str(self.random_), False, self.black)  # Question更改為隨機數字
             self.question_rect = self.question_surface.get_rect()
             self.question_rect.center = (width / 2, height / 2)
 
@@ -70,9 +70,10 @@ class Game_1():
 
         def operating(self):
             self.start = pygame.time.get_ticks() #開啟程式到按下開始鍵經過的時間 也就是閱讀遊戲規則的時間
+            self.last = 0
             while True:
                 screen.fill(self.background)
-
+				
             # 顯示玩家
                 pygame.draw.rect(screen, self.white, (20, 20, self.size, self.size + 20), 2)  # 玩家1頭像
                 screen.blit(self.player1_surface, self.player1_rect)  # 玩家1名稱
@@ -90,9 +91,10 @@ class Game_1():
 
             # 顯示題目
                 screen.blit(self.question_surface, self.question_rect)
-                if ((self.time//1000) % 2) == 0:    #每過2秒就換一數字
+                if (((self.time - self.start)//1000) % 2) == 0 and ((self.time - self.start)//1000) != self.last: #每2秒換一個數字
+                    self.last = (self.time - self.start) // 1000
                     self.random_ = random.randint(0,1000)
-                    self.question_surface = self.question_font.render(str(self.random_), False, self.black)  ## Question更改為隨機數字
+                    self.question_surface = self.question_font.render(str(self.random_), False, self.black)  # Question更改為隨機數字
                     screen.blit(self.question_surface, self.question_rect)
                     pygame.display.flip()
                     self.show = 0
@@ -150,5 +152,5 @@ image_rule = pygame.image.load('C:\\Users\\Zoe\\Desktop\\PBC2019Final-Project-ma
 
 # 設定遊戲開始按鈕
 image_button = pygame.image.load('C:\\Users\\Zoe\\Desktop\\PBC2019Final-Project-master\\遊戲開始按鈕.png')
-game_intro1()
+game_intro()
 g1 = Game_1()
