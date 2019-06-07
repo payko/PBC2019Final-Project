@@ -4,19 +4,19 @@ pygame.init()
 
 def show_icons(num):
     # input: a list
-    for i in range(10):
+    for i in range(len(num)):
         for j in range(4):
-            if i < 5:
+            if i < len(num)/2:
                 x = 30 + 75.3*j
                 y = 223 + 70*i
             else:
                 x = 380 + 75.3*j
-                y = 223 + 70*(i - 5)
+                y = 223 + 70*(i - len(num)/2)
             screen.blit(imagelist[num[i][j]], (x, y))
             
 
 def show_cover(active, player):
-    for i in range(1,6):
+    for i in range(1, int(len(num)/2) + 1):
         if i == active:
             continue
         if player == 1:
@@ -27,10 +27,10 @@ def show_cover(active, player):
             y = 150 + 70*i
         screen.blit(image_cover, (x, y)) # 第二行遮罩
 
-def next_pos(i, j, index, player):
+def next_pos(num, i, j, index, player):
     if player == 1:
         if j == 3:
-            if i == 4:
+            if i == len(num)/2 - 1:
                 index = 1
             else:
                 i += 1
@@ -39,7 +39,7 @@ def next_pos(i, j, index, player):
             j += 1
     else:
         if j == 3:
-            if i == 9:
+            if i == len(num) - 1:
                 index = 1
             else:
                 i += 1
@@ -48,15 +48,15 @@ def next_pos(i, j, index, player):
             j += 1
     return i, j, index
 
-def new_question():
+def new_question(number):
     # input: a list
     num = []
-    for i in range(5):
+    for i in range(number):
         num.append([])
         for j in range(4):
             r = random.randint(0,7)
             num[-1].append(r)
-    for i in range(5):
+    for i in range(number):
         num.append([])
         for j in range(4):
             r = num[i][j]
@@ -119,14 +119,15 @@ imagelist = [image_up_before, image_down_before, image_left_before, image_right_
 
 
 
-
+number = 1
 while True:
     #隨機產生0-7之亂數
-    num = new_question()
+    num = new_question(number)
+    number += 1
     #判斷是否為5-4圖示的index
     index = 0		
     #從1-1開始玩
-    i, j, k, l = 0, 0, 5, 0
+    i, j, k, l = 0, 0, int(len(num)/2), 0
     while True:
         screen.fill(background)
         # 顯示玩家
@@ -143,12 +144,12 @@ while True:
         pygame.draw.rect(screen, orange, (20, 220, width/2-40, 350), 2) # 玩家1題目框框 310*350
         pygame.draw.rect(screen, orange, (width/2+20, 220, width/2-40, 350), 2) # 玩家2題目框框 310*350
 
-        # 顯示題目
+        # 顯示圖示
         show_icons(num)
         
         # 顯示遮罩
         show_cover(i + 1, player = 1)
-        show_cover(k - 4, player = 2)
+        show_cover(k - int(len(num)/2) + 1, player = 2)
             
         pygame.display.flip()
 
@@ -157,21 +158,18 @@ while True:
            break
         #上或反下的時候
         for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN:
-                key_pressed = pygame.key.get_pressed()
-                    
+            if event.type == pygame.KEYDOWN: 
                 if (event.key == pygame.K_w and (num[i][j] == 0 or num[i][j] == 4))\
                     or (event.key == pygame.K_s and (num[i][j] == 1 or num[i][j] == 5))\
                     or (event.key == pygame.K_a and (num[i][j] == 2 or num[i][j] == 6))\
                     or (event.key == pygame.K_d and (num[i][j] == 3 or num[i][j] == 7)):
                     num[i][j] += 8  # 變成after的圖示
-                    print(num)
-                    i, j, index = next_pos(i, j, index, player = 1)
+                    i, j, index = next_pos(num, i, j, index, player = 1)
                 elif (event.key == pygame.K_UP and (num[k][l] == 0 or num[k][l] == 4))\
                     or (event.key == pygame.K_DOWN and (num[k][l] == 1 or num[k][l] == 5))\
                     or (event.key == pygame.K_LEFT and (num[k][l] == 2 or num[k][l] == 6))\
                     or (event.key == pygame.K_RIGHT and (num[k][l] == 3 or num[k][l] == 7)):
                     num[k][l] += 8
-                    k, l, index = next_pos(k, l, index, player = 2)
+                    k, l, index = next_pos(num, k, l, index, player = 2)
             if event.type == pygame.QUIT:
                 pygame.quit()

@@ -1,5 +1,6 @@
 import pygame
 import csv
+import random
 
 pygame.init()
 COUNT = pygame.USEREVENT + 1
@@ -48,6 +49,68 @@ def write_board(name, score, Board):
             Board[i][2] = score
             break
     return Board
+
+# functions for game2
+def show_icons(num, imagelist):
+    # input: a list
+    for i in range(len(num)):
+        for j in range(4):
+            if i < len(num)/2:
+                x = 30 + 75.3*j
+                y = 223 + 70*i
+            else:
+                x = 380 + 75.3*j
+                y = 223 + 70*(i - len(num)/2)
+            screen.blit(imagelist[num[i][j]], (x, y))
+            
+
+def show_cover(num, image_cover, active, player):
+    for i in range(1, int(len(num)/2) + 1):
+        if i == active:
+            continue
+        if player == 1:
+            x = 20
+            y = 150 + 70*i
+        else:
+            x = 370
+            y = 150 + 70*i
+        screen.blit(image_cover, (x, y)) # 第二行遮罩
+
+def next_pos(num, i, j, index, player):
+    if player == 1:
+        if j == 3:
+            if i == len(num)/2 - 1:
+                index = 1
+            else:
+                i += 1
+                j = 0
+        else:
+            j += 1
+    else:
+        if j == 3:
+            if i == len(num) - 1:
+                index = 1
+            else:
+                i += 1
+                j = 0
+        else:
+            j += 1
+    return i, j, index
+
+def new_question(number):
+    # input: a list
+    num = []
+    for i in range(number):
+        num.append([])
+        for j in range(4):
+            r = random.randint(0,7)
+            num[-1].append(r)
+    for i in range(number):
+        num.append([])
+        for j in range(4):
+            r = num[i][j]
+            num[-1].append(r)
+    return num
 
 # functions for create windows
 def blank_window(string, image_button, background_image):
@@ -256,30 +319,43 @@ def game_1():
 def game_2():
     game2 = True
     countdown = 100
-    while game2:
-        background, black, white = set_color()
-        orange = (255, 147, 0)
-        size = 140
+    background, black, white = set_color()
+    orange = (255, 147, 0)
+    size = 140
 
-        # 設定題目圖片
-        image_up_before = pygame.image.load('上前.png')
-        image_up_after = pygame.image.load('上後.png')
-        image_down_before = pygame.image.load('下前.png')
-        image_down_after = pygame.image.load('下後.png')
-        image_left_before = pygame.image.load('左前.png')
-        image_left_after = pygame.image.load('左後.png')
-        image_right_before = pygame.image.load('右前.png')
-        image_right_after = pygame.image.load('右後.png')
-        image_up_before_reverse = pygame.image.load('上前反.png')
-        image_up_after_reverse = pygame.image.load('上後反.png')
-        image_down_before_reverse = pygame.image.load('下前反.png')
-        image_down_after_reverse = pygame.image.load('下後反.png')
-        image_left_before_reverse = pygame.image.load('左前反.png')
-        image_left_after_reverse = pygame.image.load('左後反.png')
-        image_right_before_reverse = pygame.image.load('右前反.png')
-        image_right_after_reverse = pygame.image.load('右後反.png')
-        image_cover = pygame.image.load('遮罩.png')
-        
+    # 設定題目圖片
+    image_up_before = pygame.image.load('上前.png')
+    image_up_after = pygame.image.load('上後.png')
+    image_down_before = pygame.image.load('下前.png')
+    image_down_after = pygame.image.load('下後.png')
+    image_left_before = pygame.image.load('左前.png')
+    image_left_after = pygame.image.load('左後.png')
+    image_right_before = pygame.image.load('右前.png')
+    image_right_after = pygame.image.load('右後.png')
+    image_up_before_reverse = pygame.image.load('上前反.png')
+    image_up_after_reverse = pygame.image.load('上後反.png')
+    image_down_before_reverse = pygame.image.load('下前反.png')
+    image_down_after_reverse = pygame.image.load('下後反.png')
+    image_left_before_reverse = pygame.image.load('左前反.png')
+    image_left_after_reverse = pygame.image.load('左後反.png')
+    image_right_before_reverse = pygame.image.load('右前反.png')
+    image_right_after_reverse = pygame.image.load('右後反.png')
+    image_cover = pygame.image.load('遮罩.png')
+    imagelist = [image_up_before, image_down_before, image_left_before, image_right_before,
+                 image_down_before_reverse, image_up_before_reverse, image_right_before_reverse, image_left_before_reverse,
+                 image_up_after, image_down_after, image_left_after, image_right_after,
+                 image_down_after_reverse, image_up_after_reverse,image_right_after_reverse, image_left_after_reverse]
+    
+    number = 1
+    while game2:
+        #隨機產生0-7之亂數
+        num = new_question(number)
+        if number <= 5
+            number += 1
+        #判斷是否為5-4圖示的index
+        index = 0		
+        #從1-1開始玩
+        i, j, k, l = 0, 0, int(len(num)/2), 0
         while game2: # 遊戲迴圈
             screen.fill(background)
             # 顯示玩家
@@ -294,45 +370,38 @@ def game_2():
             # 顯示題目
             pygame.draw.rect(screen, orange, (20, 220, width/2-40, 350), 2) # 玩家1題目框框 310*350
             pygame.draw.rect(screen, orange, (width/2+20, 220, width/2-40, 350), 2) # 玩家2題目框框 310*350
-            # 玩家1的圖示
-            screen.blit(image_up_before, (30, 223)) # 1-1
-            screen.blit(image_up_before, (30 + 64 + 11.3, 223)) # 1-2
-            screen.blit(image_up_before, (30 + 64 + 64 + 11.3 + 11.3, 223)) # 1-3
-            screen.blit(image_up_before, (30 + 64 + 64 + 64 + 11.3 + 11.3 + 11.3, 223)) # 1-4
-            # 玩家2的圖示
-            screen.blit(image_up_before, (30 + 350, 223)) # 1-1
-            screen.blit(image_up_before, (30 + 64 + 11.3 + 350, 223)) # 1-2
-            screen.blit(image_up_before, (30 + 64 + 64 + 11.3 + 11.3 + 350, 223)) # 1-3
-            screen.blit(image_up_before, (30 + 64 + 64 + 64 + 11.3 + 11.3 + 11.3 + 350, 223)) # 1-4
-            ## 其他的題目位置去看"04第二關遊戲視窗"
+            
+            # 顯示圖示
+            show_icons(num, imagelist)
+        
+            # 顯示遮罩
+            show_cover(num, image_cover, i + 1, player = 1)
+            show_cover(num, image_cover, k - int(len(num)/2) + 1, player = 2)
+            
+            pygame.display.flip()
 
+            # 玩家按下相對按鍵，題目變色
+            if index == 1:  # if index == 0, 刷新題目
+                break
+            
             countstext = str(countdown)
             for event in pygame.event.get():
                 # 玩家按下相對按鍵，題目變色
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_1:
-                        game2 = False
-                """
-                if event.type == pygame.KEYDOWN:
-                    # 玩家 1
-                    if event.key == pygame.K_w:
-                        # 上 圖示變色
-                    elif event.key == pygame.K_s:
-                        # 下 圖示變色
-                    elif event.key == pygame.K_a:
-                        # 左 圖示變色
-                    elif event.key == pygame.K_d:
-                        # 右 圖示變色
-                    # 玩家 2
-                    if event.key == pygame.K_UP:
-                        # 上 圖示變色
-                    elif event.key == pygame.K_DOWN:
-                        # 下 圖示變色
-                    elif event.key == pygame.K_LEFT:
-                        # 左 圖示變色
-                    elif event.key == pygame.K_RIGHT:
-                        # 右 圖示變色"""
-                # 關閉視窗
+                    key_pressed = pygame.key.get_pressed()
+                    
+                    if (event.key == pygame.K_w and (num[i][j] == 0 or num[i][j] == 4))\
+                        or (event.key == pygame.K_s and (num[i][j] == 1 or num[i][j] == 5))\
+                        or (event.key == pygame.K_a and (num[i][j] == 2 or num[i][j] == 6))\
+                        or (event.key == pygame.K_d and (num[i][j] == 3 or num[i][j] == 7)):
+                        num[i][j] += 8  # 變成after的圖示
+                        i, j, index = next_pos(num, i, j, index, player = 1)
+                    elif (event.key == pygame.K_UP and (num[k][l] == 0 or num[k][l] == 4))\
+                        or (event.key == pygame.K_DOWN and (num[k][l] == 1 or num[k][l] == 5))\
+                        or (event.key == pygame.K_LEFT and (num[k][l] == 2 or num[k][l] == 6))\
+                        or (event.key == pygame.K_RIGHT and (num[k][l] == 3 or num[k][l] == 7)):
+                        num[k][l] += 8
+                        k, l, index = next_pos(num, k, l, index, player = 2)
                 if event.type == pygame.QUIT:
                     pygame.quit()
                 if event.type == COUNT:
