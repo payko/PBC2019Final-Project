@@ -1,7 +1,10 @@
 ##needs:
-#1 prepare_window()改成會回傳name1, name2, 兩張頭像
+#1 prepare_window()改成會回傳name1, name2
 #2 三個遊戲畫面的背景都要改成有空心(後面放頭像)
-#3 
+#3 封面
+#4 第二關的計分
+#5 第三關合併(ing)
+#6 改成按按鈕才拍照
 
 import pygame
 import csv
@@ -27,7 +30,6 @@ def show_time(text, countdown):
     clock_rect.center = (width / 2, 160)
     screen.blit(clock_surface, clock_rect)
 
-
 def show_end():
     font_big = pygame.font.Font(None, 150)
     red = (255, 0, 0)
@@ -36,14 +38,12 @@ def show_end():
     output_rect.center = (width / 2, height / 2)
     screen.blit(output_surface, output_rect)
 
-
 # functions for leader board
 def compared(n1, s1, n2, s2, want):
     # input: 玩家名稱、得分、回傳winner(want = 'w')、回傳loser(want = 'l')
     if (s1 >= s2 and want == 'w') or (s1 < s2 and want == 'l'):
         return n1, s1
     return n2, s2
-
 
 def write_board(name, score, Board):
     # 把一位玩家的結果記入排行榜
@@ -76,7 +76,6 @@ def effect(random_, show, score1, score2):
 			
     return score1, score2
 
-
 # functions for game2
 def show_icons(num, imagelist):
     # input: a list
@@ -90,7 +89,6 @@ def show_icons(num, imagelist):
                 y = 223 + 70 * (i - len(num) / 2)
             screen.blit(imagelist[num[i][j]], (x, y))
 
-
 def show_cover(num, image_cover, active, player):
     for i in range(1, int(len(num) / 2) + 1):
         if i == active:
@@ -102,7 +100,6 @@ def show_cover(num, image_cover, active, player):
             x = 370
             y = 150 + 70 * i
         screen.blit(image_cover, (x, y))  # 第二行遮罩
-
 
 def next_pos(num, i, j, index, player):
     if player == 1:
@@ -125,7 +122,6 @@ def next_pos(num, i, j, index, player):
             j += 1
     return i, j, index
 
-
 def new_question(number):
     # input: a list
     num = []
@@ -140,7 +136,6 @@ def new_question(number):
             r = num[i][j]
             num[-1].append(r)
     return num
-
 
 # functions for create windows
 def blank_window(string, image_button, background_image):
@@ -201,16 +196,14 @@ def prepare_window(string):
 def game_intro(image_rule):
     blank_window(None, image_start_button, image_rule)
 
-
 def result_window(string):
     blank_window(string, image_next_button, None)
-
 
 def board_window(wn, ws, ln, ls):
     # input: 贏家名字、得分、輸家名字、得分
     stay = True
     screen.fill(background)
-    # screen.blit(background_image, (0, 0))
+    screen.blit(image_boardbg, (0, 0))
     # 之後補上
 
     # 讀入舊的排行榜
@@ -234,14 +227,15 @@ def board_window(wn, ws, ln, ls):
     w_file.close()
 
     output_font = pygame.font.Font(None, 48)  # 字體大小 = 60
-    for i in range(6):
-        rank = str(Board[i][0])
-        player = str(Board[i][1])
-        score = str(Board[i][2])
-        output_surface = output_font.render('%s%15s%10s' % (rank, player, score), False, black)
-        output_rect = output_surface.get_rect()
-        output_rect.center = (width / 2, 100 + 50 * i)
-        screen.blit(output_surface, output_rect)
+    for i in range(1, 7):
+        if player:
+            rank = str(Board[i][0])
+            player = str(Board[i][1])
+            score = str(Board[i][2])
+            output_surface = output_font.render('{:>10} {:>10}'.format(player, score), False, black)
+            output_rect = output_surface.get_rect()
+            output_rect.center = (370, 230 + 50 * i)
+            screen.blit(output_surface, output_rect)
     while stay:
         for event in pygame.event.get():
             # 關閉視窗
@@ -254,7 +248,6 @@ def board_window(wn, ws, ln, ls):
         screen.blit(image_next_button, (button_x, button_y))
         pygame.display.flip()
         mouse = pygame.mouse.get_pos()
-
 
 def again_window(string):
     stay = True
@@ -283,14 +276,12 @@ def again_window(string):
         mouse = pygame.mouse.get_pos()
     return again
 
-
 # for game windows setting
 def set_color():
     background = (255, 246, 211)
     black = (0, 0, 0)
     white = (255, 255, 255)
     return background, black, white
-
 
 def set_player(name, num):
     background, black, white = set_color()
@@ -305,7 +296,6 @@ def set_player(name, num):
         player_rect.center = (width - 20 - size / 2, 20 + size + 20 + 20)
     return player_surface, player_rect
 
-
 def set_score(score, num):
     background, black, white = set_color()
     size = 140
@@ -319,7 +309,6 @@ def set_score(score, num):
         score_rect.center = (width - 20 - size - 50, 50)
     return score_surface, score_rect
 
-
 # for game runnung
 def game_1(score1, score2):
     game1 = True
@@ -332,7 +321,7 @@ def game_1(score1, score2):
     # 設定題目
     random_ = random.randint(0,1000)
     question_font = pygame.font.Font(None, 60)  # 字體大小 = 60
-    question_surface = question_font.render(str(random_), False, black)  # Question更改為隨機數字
+    question_surface = question_font.render(str(random_), True, black)  # Question更改為隨機數字
     question_rect = question_surface.get_rect()
     question_rect.center = (width / 2, height / 2)
 
@@ -368,13 +357,15 @@ def game_1(score1, score2):
             show_time(countstext, countdown)
         else:
             show_end()
-
         # 顯示題目
-        screen.blit(question_surface, question_rect)
+        if countdown > 0:
+            screen.blit(question_surface, question_rect)
         if (((time - start)//1000) % 2) == 0 and ((time - start)//1000) != last: #每2秒換一個數字
             last = (time - start) // 1000
             random_ = random.randint(0,1000)
-            question_surface = question_font.render(str(random_), False, black)  # Question更改為隨機數字
+            question_surface = question_font.render('{}'.format(str(random_)), True, black)  # Question更改為隨機數字
+            question_rect = question_surface.get_rect()
+            question_rect.center = (width / 2, height / 2)
             if countdown > 0:
                 screen.blit(question_surface, question_rect)
             pygame.display.flip()
@@ -409,7 +400,6 @@ def game_1(score1, score2):
         pygame.display.flip()
 
     return score1, score2
-
 
 def game_2(score1, score2):
     game2 = True
@@ -450,7 +440,7 @@ def game_2(score1, score2):
     while game2:
         # 隨機產生0-7之亂數
         num = new_question(number)
-        if number <= 5:
+        if number < 5:
             number += 1
         # 判斷是否為5-4圖示的index
         index = 0
@@ -582,6 +572,7 @@ def game_3(score1, score2):
             pygame.display.flip()
     return score1, score2
 
+# functions for photos
 def rescale_frame(frame, percent=75):
     '''調整鏡頭大小'''
     width = int(frame.shape[1] * percent/ 100)
@@ -657,6 +648,7 @@ image_done_button = pygame.image.load('準備完成.png')
 image_next_button = pygame.image.load('下一頁.png')
 image_again_button = pygame.image.load('再來一次.png')
 image_end_button = pygame.image.load('遊戲結束.png')
+image_boardbg = pygame.image.load('排行榜.png')
 
 background, black, white = set_color()
 size = 140
