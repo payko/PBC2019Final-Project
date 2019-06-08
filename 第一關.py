@@ -71,6 +71,7 @@ class Game_1():
         def operating(self):
             self.start = pygame.time.get_ticks() #開啟程式到按下開始鍵經過的時間 也就是閱讀遊戲規則的時間
             self.last = 0
+            self.getpoints = False
             while True:
                 screen.fill(self.background)
 				
@@ -98,18 +99,21 @@ class Game_1():
                     screen.blit(self.question_surface, self.question_rect)
                     pygame.display.flip()
                     self.show = 0
+                    self.getpoints = False
                     continue
                 else:
                     for event in pygame.event.get():
                     # player1按 s 鍵，player2按 k 鍵
                         if event.type == pygame.KEYDOWN:
-                            if event.key == pygame.K_s:
+                            if event.key == pygame.K_s and self.getpoints == False:
                                 self.show = 1
                                 self.result = self.effect()
+                                self.getpoints = True
                                 self.score1_surface = self.player_font.render(str(self.result[0]), False, self.black)  # 玩家1分數
-                            elif event.key == pygame.K_k:
+                            elif event.key == pygame.K_k and self.getpoints == False:
                                 self.show = 2
                                 self.result = self.effect()
+                                self.getpoints = True
                                 self.score2_surface = self.player_font.render(str(self.result[1]), False, self.black)  # 玩家2分數    
                     # 關閉視窗
                         elif event.type == pygame.QUIT:
@@ -151,6 +155,6 @@ pygame.display.set_caption('第一關 3的世界')
 image_rule = pygame.image.load('第一關遊戲規則.png')
 
 # 設定遊戲開始按鈕
-image_button = pygame.image.load('遊戲開始.png')
+image_button = pygame.image.load('遊戲開始按鈕.png')
 game_intro()
 g1 = Game_1()
