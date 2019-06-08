@@ -64,7 +64,7 @@ class Game_1():
             self.question_rect.center = (width / 2, height / 2)
 
         # 設定拍手
-            self.clap = pygame.image.load('C:\\Users\\Zoe\\Desktop\\PBC2019Final-Project-master\\clap.png')
+            self.clap = pygame.image.load('clap.png')
             self.show = 0  # 不顯示拍手 ## 換新題目show要重設為0
             self.operating()
 
@@ -148,9 +148,9 @@ screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption('第一關 3的世界')
 
 # 設定規則
-image_rule = pygame.image.load('C:\\Users\\Zoe\\Desktop\\PBC2019Final-Project-master\\第一關遊戲規則.png')
+image_rule = pygame.image.load('第一關遊戲規則.png')
 
 # 設定遊戲開始按鈕
-image_button = pygame.image.load('C:\\Users\\Zoe\\Desktop\\PBC2019Final-Project-master\\遊戲開始按鈕.png')
+image_button = pygame.image.load('遊戲開始.png')
 game_intro()
 g1 = Game_1()
