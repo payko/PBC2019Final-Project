@@ -6,6 +6,7 @@
 #5 RESULT的背景(WINNER vs LOSER)
 #6 改成按按鈕才拍照
 #7 音效
+#8 剛開始的enter 閃太快
 
 
 import pygame, sys, os 
@@ -14,6 +15,7 @@ import csv
 from PIL import Image
 import cv2
 import random
+from pygame.locals import *
 
 pygame.init()
 COUNT = pygame.USEREVENT + 1
@@ -142,7 +144,7 @@ def effect(random_, show, score1, score2):
             score1 -= 1
         elif show == 2:
                 score2 -= 1
-			
+            
     return score1, score2
 
 # functions for game2
@@ -232,7 +234,7 @@ def new_question(number, questionnum):
 # functions for game3
 def effect3(random_word, random_color, show, score1, score2):
     word = ['RED', 'BLACK', 'GREEN', 'BLUE', 'PURPLE', 'GRAY', 'RED', 'BLACK', 'GREEN', 'BLUE', 'PURPLE', 'GRAY', 'RED', 'BLACK', 'GREEN', 'BLUE', 'PURPLE', 'GRAY', 'RED', 'BLACK', 'GREEN', 'BLUE', 'PURPLE', 'GRAY']
-    color = [(255, 0, 0), (0, 0, 0), (0, 128, 0), (0, 0, 255), (128, 0, 128), (128, 128, 128)]	
+    color = [(255, 0, 0), (0, 0, 0), (0, 128, 0), (0, 0, 255), (128, 0, 128), (128, 128, 128)]  
      
     if (word.index(random_word) % 6) == color.index(random_color):
         if show == 1:
@@ -244,7 +246,7 @@ def effect3(random_word, random_color, show, score1, score2):
             score1 -= 1
         elif show == 2:
             score2 -= 1
-					
+                    
     return score1, score2
 
 # functions for create windows
@@ -492,7 +494,7 @@ def game_1(score1, score2):
         
     while game1:
         screen.fill(background)
-				
+                
         # 顯示玩家
         pygame.draw.rect(screen, white, (20, 20, size, size + 20), 2)  # 玩家1頭像
         screen.blit(player1_surface, player1_rect)  # 玩家1名稱
@@ -861,8 +863,37 @@ def croppic():
     white.paste(newimg_player2, (10, 10))
     white.save('player2.png')
 
+def begining():
+    screen.blit(background_pic1, (0, 0))
+    counter = 0
+    running = True
+    while running:
+        counter +=1
+        if counter % 6 == 0:
+            screen.blit(begining_enter, (width / 2 - 120, height - 120))
+        else:
+            screen.fill((0, 0, 0))
+            screen.blit(background_pic1, (0, 0))
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+            if event.type == KEYDOWN and event.key == K_RETURN: # enter鍵
+                running = False
+        pygame.display.update()
+
+def intro_0():
+
+    screen.blit(intro_background, (0, 0))
+    running = True
 
 
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            if event.type == KEYDOWN and event.key == K_RETURN: # enter鍵
+                running = False
+        pygame.display.update()
 # main funtions
 # 建立視窗
 width = 700
@@ -882,6 +913,11 @@ image_next_button = pygame.image.load('下一頁.png')
 image_again_button = pygame.image.load('再來一次.png')
 image_end_button = pygame.image.load('遊戲結束.png')
 image_boardbg = pygame.image.load('排行榜.png')
+background_pic1 = pygame.image.load('background_pic1.png')
+background_pic2 = pygame.image.load('background_pic2.jpg')
+begining_enter = pygame.image.load('beginingenter.png')
+intro_background = pygame.image.load('introbg.png')
+
 
 background, black, white = set_color()
 size = 140
@@ -897,7 +933,9 @@ score2 = 0
 again = True
 while again:
     again = False
-    blank_window('Beginning', image_start_button, None)  # for 遊戲開始畫面
+    #blank_window('Beginning', image_start_button, None)  # for 遊戲開始畫面
+    begining()
+    intro_0()
     # game_intro(image_rule0)
     capture()
     croppic()
