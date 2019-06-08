@@ -3,7 +3,7 @@
 #2 三個遊戲畫面的背景都要改成有空心(後面放頭像)
 #3 封面
 #4 第二關的計分
-#5 第三關合併(ing)
+#5 RESULT的背景(WINNER vs LOSER)
 #6 改成按按鈕才拍照
 
 import pygame
@@ -137,6 +137,23 @@ def new_question(number):
             num[-1].append(r)
     return num
 
+def effect3(random_word, random_color, show, score1, score2):
+    word = ['RED', 'BLACK', 'GREEN', 'BLUE', 'PURPLE', 'GRAY', 'RED', 'BLACK', 'GREEN', 'BLUE', 'PURPLE', 'GRAY', 'RED', 'BLACK', 'GREEN', 'BLUE', 'PURPLE', 'GRAY', 'RED', 'BLACK', 'GREEN', 'BLUE', 'PURPLE', 'GRAY']
+    color = [(255, 0, 0), (0, 0, 0), (0, 128, 0), (0, 0, 255), (128, 0, 128), (128, 128, 128)]	
+     
+    if (word.index(random_word) % 6) == color.index(random_color):
+        if show == 1:
+            score1 += 2
+        elif show == 2:
+            score2 += 2
+    else:
+        if show == 1:
+            score1 -= 1
+        elif show == 2:
+            score2 -= 1
+					
+    return score1, score2
+
 # functions for create windows
 def blank_window(string, image_button, background_image):
     stay = True
@@ -228,10 +245,10 @@ def board_window(wn, ws, ln, ls):
 
     output_font = pygame.font.Font(None, 48)  # 字體大小 = 60
     for i in range(1, 7):
+        rank = str(Board[i][0])
+        player = str(Board[i][1])
+        score = str(Board[i][2])
         if player:
-            rank = str(Board[i][0])
-            player = str(Board[i][1])
-            score = str(Board[i][2])
             output_surface = output_font.render('{:>10} {:>10}'.format(player, score), False, black)
             output_rect = output_surface.get_rect()
             output_rect.center = (370, 230 + 50 * i)
@@ -392,10 +409,10 @@ def game_1(score1, score2):
                     if countdown == -3:
                         game1 = False
             # 顯示拍手
-        if show == 1:
-            screen.blit(clap, (50, 350))
-        elif show == 2:
-            screen.blit(clap, (width - 50 - 260, 350))
+            if show == 1:
+                screen.blit(clap, (50, 350))
+            elif show == 2:
+                screen.blit(clap, (width - 50 - 260, 350))
 
         pygame.display.flip()
 
@@ -511,65 +528,89 @@ def game_2(score1, score2):
 def game_3(score1, score2):
     game3 = True
     countdown = 30
+    background, black, white = set_color()
+    size = 140
+    player_font = pygame.font.Font(None, 32)
+
+    # 設定分數
+    score1_surface, score1_rect = set_score(score1, 1)
+    score2_surface, score2_rect = set_score(score2, 2)
+
+    # 設定題目
+    random_word = random.choice(['RED', 'BLACK', 'GREEN', 'BLUE', 'PURPLE', 'GRAY', 'RED', 'BLACK', 'GREEN', 'BLUE', 'PURPLE', 'GRAY', 'RED', 'BLACK', 'GREEN', 'BLUE', 'PURPLE', 'GRAY', 'RED', 'BLACK', 'GREEN', 'BLUE', 'PURPLE', 'GRAY'])
+    random_color = random.choice([(255, 0, 0), (0, 0, 0), (0, 128, 0), (0, 0, 255), (128, 0, 128), (128, 128, 128)])
+    question_font = pygame.font.Font(None, 60)  # 字體大小 = 60
+    question_surface = question_font.render(str(random_word), False, random_color)  # Question更改為隨機單字
+    question_rect = question_surface.get_rect()
+    question_rect.center = (width / 2, height / 2)
+        
+    # 設定拍手
+    clap = pygame.image.load('clap.png')
+    show = 0  # 不顯示拍手 ## 換新題目show要重設為0
+    start = pygame.time.get_ticks() #開啟程式到按下開始鍵經過的時間 也就是閱讀遊戲規則的時間
+    last = 0
     while game3:
-        background, black, white = set_color()
-        size = 140
+        screen.fill(background)
 
-        # 設定題目
-        question_font = pygame.font.Font(None, 60)  # 字體大小 = 60
-        question_surface = question_font.render('Question', False, black)  ## Question更改為隨機數字
-        question_rect = question_surface.get_rect()
-        question_rect.center = (width / 2, height / 2)
-        # 設定拍手
-        clap = pygame.image.load('clap.png')
-        show = 0  # 不顯示拍手 ## 換新題目show要重設為0
-        while game3:  # 遊戲迴圈
-            screen.fill(background)
-            # 顯示玩家
-            pygame.draw.rect(screen, white, (20, 20, size, size + 20), 2)  # 玩家1頭像
-            screen.blit(player1_surface, player1_rect)  # 玩家1名稱
-            pygame.draw.rect(screen, white, (width - 20 - size, 20, size, 20 + size), 2)  # 玩家2頭像
-            screen.blit(player2_surface, player2_rect)  # 玩家2名稱
-            # 顯示分數
-            score1_surface, score1_rect = set_score(score1, 1)
-            score2_surface, score2_rect = set_score(score2, 2)
-            screen.blit(score1_surface, score1_rect)  # 玩家1分數
-            screen.blit(score2_surface, score2_rect)  # 玩家2分數
-            # 顯示題目
+        # 顯示玩家
+        pygame.draw.rect(screen, white, (20, 20, size, size + 20), 2)  # 玩家1頭像
+        screen.blit(player1_surface, player1_rect)  # 玩家1名稱
+        pygame.draw.rect(screen, white, (width - 20 - size, 20, size, 20 + size), 2)  # 玩家2頭像
+        screen.blit(player2_surface, player2_rect)  # 玩家2名稱
+                
+        time = pygame.time.get_ticks()  #開啟程式後經過的時間
+        
+        # 顯示分數
+        screen.blit(score1_surface, score1_rect)  # 玩家1分數
+        screen.blit(score2_surface, score2_rect)  # 玩家2分數
+        
+        countstext = str(countdown)
+        if countdown > 0:
+            show_time(countstext, countdown)
             screen.blit(question_surface, question_rect)
+        else:
+            show_end()
 
-            countstext = str(countdown)
+        if (((time - start)//1000) % 0.5) == 0 and ((time - start)//1000) != last: #每半秒換一次題目
+            last = (time - start) // 1000
+            random_word = random.choice(['RED', 'BLACK', 'GREEN', 'BLUE', 'PURPLE', 'GRAY'])
+            random_color = random.choice([(255, 0, 0), (0, 0, 0), (0, 128, 0), (0, 0, 255), (128, 0, 128), (128, 128, 128)])
+            question_surface = question_font.render(str(random_word), True, random_color)  # Question更改為隨機單字
+            question_rect = question_surface.get_rect()
+            question_rect.center = (width / 2, height / 2)
+            screen.blit(question_surface, question_rect)
+            pygame.display.flip()
+            show = 0
+            continue
+        else:
             for event in pygame.event.get():
-                # 顯示拍手
-                # player1按 s 鍵，player2按 k 鍵
+            # player1按 s 鍵，player2按 k 鍵
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_s:
                         show = 1
+                        score1, score2 = effect3(random_word, random_color, show, score1, score2)
+                        score1_surface = player_font.render(str(score1), False, black)  # 玩家1分數
                     elif event.key == pygame.K_k:
                         show = 2
-                    elif event.key == pygame.K_1:
-                        game3 = False
+                        score1, score2 = effect3(random_word, random_color, show, score1, score2)
+                        score2_surface = player_font.render(str(score2), False, black)  # 玩家2分數    
                 # 關閉視窗
-                if event.type == pygame.QUIT:
+                elif event.type == pygame.QUIT:
                     pygame.quit()
-                if event.type == COUNT:
+                # 倒數
+                elif event.type == COUNT:
                     countdown = countdown - 1
                     countstext = str(countdown)
                     if countdown == -3:
                         game3 = False
-
             # 顯示拍手
             if show == 1:
                 screen.blit(clap, (50, 350))
             elif show == 2:
                 screen.blit(clap, (width - 50 - 260, 350))
-                game3 = False
-            # 倒數
-            if countdown > 0:
-                show_time(countstext, countdown)
-            else:
-                show_end()
-            pygame.display.flip()
+    
+        pygame.display.flip()
+    
     return score1, score2
 
 # functions for photos
