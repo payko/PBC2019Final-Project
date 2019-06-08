@@ -8,7 +8,8 @@
 #7 音效
 #8 改第二關規則(答對加3分)
 
-import pygame
+import pygame, sys, os 
+os.environ['SDL_VIDEO_CENTERED'] = '1' # centers Pygame SCREEN on desktop 
 import csv
 from PIL import Image
 import cv2
@@ -39,6 +40,91 @@ def show_end():
     output_rect = output_surface.get_rect()
     output_rect.center = (width / 2, height / 2)
     screen.blit(output_surface, output_rect)
+
+# functions for enter names:
+def getname(player): 
+    name = ask("Your name") 
+    SCREEN.fill(BLACK) 
+    nSurf = BASICFONT.render('Press n to enter name', False, WHITE) 
+    nRect = nSurf.get_rect() 
+    nRect.midtop = (SCREENWIDTH/2, SCREENHEIGHT - 30) 
+    SCREEN.blit(nSurf, nRect) 
+
+    nameSurf = BASICFONT.render('Your name is '+ name, True, WHITE) 
+    nameRect = nameSurf.get_rect() 
+    nameRect.midtop = (SCREENWIDTH/2, SCREENHEIGHT/2) 
+    SCREEN.blit(nameSurf, nameRect) 
+
+    pygame.display.update()
+
+def get_key(): 
+    while 1: 
+     for event in pygame.event.get(): 
+      if event.type == pygame.KEYDOWN: 
+       return event.key
+      else: 
+       pass 
+
+def ask_name(player, name1, name2): 
+    "ask(question) -> answer" 
+    current_string = "" 
+    display(current_string, name1, name2, player) 
+    while True: 
+        inkey = get_key() 
+        if inkey == pygame.K_BACKSPACE: 
+            current_string = current_string[:-1]
+        elif inkey == pygame.K_RETURN or inkey == pygame.K_KP_ENTER: 
+            break 
+        elif inkey == pygame.K_ESCAPE: 
+            pygame.quit()
+        else: 
+            current_string += chr(inkey)
+        display(current_string.capitalize(), name1, name2, player) 
+
+    return current_string.capitalize() # this is the answer
+
+def display(message, name1, name2, player): 
+    orange = (255, 147, 0)
+    player1_face = pygame.image.load('player1.png')
+    player2_face = pygame.image.load('player2.png')
+    vs = pygame.image.load('vs.png')
+    player1_face.convert()
+    player2_face.convert()
+
+    # 設定文字
+    name_font = pygame.font.Font(None, 32)
+    txt_font = pygame.font.Font(None, 30)
+    nametxt1_surf = txt_font.render('Press s to enter name', True, orange)
+    nametxt2_surf = txt_font.render('Player 1:', True, orange)
+    nametxt3_surf = txt_font.render('Press k to enter name', True, orange)
+    nametxt4_surf = txt_font.render('Player 2:', True, orange)
+    
+    screen.fill(background)
+    screen.blit(player1_face, (30, 60))
+    screen.blit(player2_face, (width - 300, 60)) #照片位置
+    screen.blit(vs, (250, 0))
+    screen.blit(nametxt1_surf, (30, 355))
+    screen.blit(nametxt2_surf, (30, 375))
+    screen.blit(nametxt3_surf, (width - 300, 355))
+    screen.blit(nametxt4_surf, (width - 300, 375))
+    
+    if name1:
+        screen.blit(name_font.render(name1, True, black), (120, 375))
+    if name2:
+        screen.blit(name_font.render(name2, True, black), (width - 210, 375))
+    
+    txt5_surf = txt_font.render('Press Enter when done', True, (255,120,0))
+    if player == 1:
+        screen.blit(txt5_surf, (30, 405))
+    else:
+        screen.blit(txt5_surf, (width - 300, 405))
+    if len(message) != 0: 
+        if player == 1:
+            screen.blit(name_font.render(message, True, black), (120, 375)) 
+        else:
+            screen.blit(name_font.render(message, True, black), (width - 210, 375))
+
+    pygame.display.update()
 
 # functions for leader board
 def compared(n1, s1, n2, s2, want):
@@ -206,35 +292,70 @@ def blank_window(string, image_button, background_image):
         pygame.display.flip()
         mouse = pygame.mouse.get_pos()
 
-def prepare_window(string):
-
+def prepare_window():
+    red = (255, 0, 0)
+    orange = (255, 147, 0)
     player1_face = pygame.image.load('player1.png')
     player2_face = pygame.image.load('player2.png')
     vs = pygame.image.load('vs.png')
     player1_face.convert()
     player2_face.convert()
+    name1 = ""
+    name2 = ""
 
-    screen.fill(background)
-    screen.blit(player1_face, (30, 60))
-    screen.blit(player2_face, (width - 300, 60)) #照片位置
-    screen.blit(vs, (250, 0))
-
+    # 設定文字
+    name_font = pygame.font.Font(None, 32)
+    txt_font = pygame.font.Font(None, 30)
+    nametxt1_surf = txt_font.render('Press s to enter name', True, orange)
+    nametxt2_surf = txt_font.render('Player 1:', True, orange)
+    nametxt3_surf = txt_font.render('Press k to enter name', True, orange)
+    nametxt4_surf = txt_font.render('Player 2:', True, orange)
 
     stay = True
+    bad = False
     while stay:
+        screen.fill(background)
+        screen.blit(player1_face, (30, 60))
+        screen.blit(player2_face, (width - 300, 60)) #照片位置
+        screen.blit(vs, (250, 0))
+        screen.blit(nametxt1_surf, (30, 355))
+        screen.blit(nametxt2_surf, (30, 375))
+        screen.blit(nametxt3_surf, (width - 300, 355))
+        screen.blit(nametxt4_surf, (width - 300, 375))
+        if name1:
+            screen.blit(name_font.render(name1, True, black), (120, 375))
+        if name2:
+            screen.blit(name_font.render(name2, True, black), (width - 210, 375))
+        if bad:
+            txt6_surf = txt_font.render('Please enter your names!', True, red)
+            txt6_rect = txt6_surf.get_rect()
+            txt6_rect.center = (width / 2, height - 150)
+            screen.blit(txt6_surf, txt6_rect)
+
         for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN: 
+                if event.key == pygame.K_s and name1 == "": 
+                    name1 = ask_name(1, name1, name2)
+                    if name1:
+                        bad = False
+                elif event.key == pygame.K_k and name2 == "":
+                    name2 = ask_name(2, name1, name2)
+                    if name2:
+                        bad = False
             # 關閉視窗
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if 500 < mouse[0] < 630 and 515 < mouse[1] < 565:  # 給Again button設定的範圍
-                    stay = False
-                elif 280 < mouse[0] < 430 and 515 < mouse[1] < 565:  # 給End button設定的範圍
-                    stay = False
+                    if name1 == "" or name2 == "":
+                        bad = True
+                    else:
+                        stay = False
         screen.blit(image_done_button, (button_x, button_y))
         pygame.display.flip()
         mouse = pygame.mouse.get_pos()
+    return name1, name2
 
 def game_intro(image_rule):
     blank_window(None, image_start_button, image_rule)
@@ -784,11 +905,9 @@ size = 140
 name1 = 'Name1'
 name2 = 'Name2'
 
-
 # 設定分數
 score1 = 0
 score2 = 0
-
 
 # run
 again = True
@@ -798,8 +917,7 @@ while again:
     # game_intro(image_rule0)
     capture()
     croppic()
-    #name1, name2 = 
-    prepare_window('Information')  # for 輸入玩家資訊
+    name1, name2 = prepare_window()  # for 輸入玩家資訊
     player1_surface, player1_rect = set_player(name1, 1)
     player2_surface, player2_rect = set_player(name2, 2)
     
