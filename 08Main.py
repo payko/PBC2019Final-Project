@@ -1,3 +1,8 @@
+##needs:
+#1 prepare_window()改成會回傳name1, name2, 兩張頭像
+#2 三個遊戲畫面的背景都要改成有空心(後面放頭像)
+#3 
+
 import pygame
 import csv
 from PIL import Image
@@ -55,6 +60,21 @@ def write_board(name, score, Board):
             Board[i][2] = score
             break
     return Board
+
+# functions for game1
+def effect(random_, show, score1, score2):
+    if random_ % 3 == 0 or '3' in str(random_):
+        if show == 1:
+            score1 += 2
+        elif show == 2:
+            score2 += 2
+    else:
+        if show == 1:
+            score1 -= 1
+        elif show == 2:
+                score2 -= 1
+			
+    return score1, score2
 
 
 # functions for game2
@@ -301,72 +321,106 @@ def set_score(score, num):
 
 
 # for game runnung
-def game_1():
+def game_1(score1, score2):
     game1 = True
     countdown = 60
-    while game1:
-        background, black, white = set_color()
-        size = 140
-        # 設定題目
-        question_font = pygame.font.Font(None, 60)  # 字體大小 = 60
-        question_surface = question_font.render('Question', False, black)  ## Question更改為隨機數字
-        question_rect = question_surface.get_rect()
-        question_rect.center = (width / 2, height / 2)
-        # 設定拍手
-        clap = pygame.image.load('clap.png')
-        show = 0  # 不顯示拍手 ## 換新題目show要重設為0
-        while game1:  # 遊戲迴圈
-            screen.fill(background)
-            # 顯示玩家
-            pygame.draw.rect(screen, white, (20, 20, size, size + 20), 2)  # 玩家1頭像
-            screen.blit(player1_surface, player1_rect)  # 玩家1名稱
-            pygame.draw.rect(screen, white, (width - 20 - size, 20, size, 20 + size), 2)  # 玩家2頭像
-            screen.blit(player2_surface, player2_rect)  # 玩家2名稱
-            # 顯示分數
-            screen.blit(score1_surface, score1_rect)  # 玩家1分數
-            screen.blit(score2_surface, score2_rect)  # 玩家2分數
-            # 顯示題目
-            screen.blit(question_surface, question_rect)
-            countstext = str(countdown)
-            for event in pygame.event.get():
-                # 顯示拍手
-                # player1按 s 鍵，player2按 k 鍵
+    
+    background, black, white = set_color()
+    size = 140
+    player_font = pygame.font.Font(None, 32)
 
+    # 設定題目
+    random_ = random.randint(0,1000)
+    question_font = pygame.font.Font(None, 60)  # 字體大小 = 60
+    question_surface = question_font.render(str(random_), False, black)  # Question更改為隨機數字
+    question_rect = question_surface.get_rect()
+    question_rect.center = (width / 2, height / 2)
+
+    # 設定分數
+    score1_surface, score1_rect = set_score(score1, 1)
+    score2_surface, score2_rect = set_score(score2, 2)
+
+    # 設定拍手
+    clap = pygame.image.load('clap.png')
+    show = 0  # 不顯示拍手 ## 換新題目show要重設為0
+        
+    start = pygame.time.get_ticks() #開啟程式到按下開始鍵經過的時間 也就是閱讀遊戲規則的時間
+    last = 0
+        
+        
+    while game1:
+        screen.fill(background)
+				
+        # 顯示玩家
+        pygame.draw.rect(screen, white, (20, 20, size, size + 20), 2)  # 玩家1頭像
+        screen.blit(player1_surface, player1_rect)  # 玩家1名稱
+        pygame.draw.rect(screen, white, (width - 20 - size, 20, size, 20 + size), 2)  # 玩家2頭像                screen.blit(player2_surface, player2_rect)  # 玩家2名稱
+        screen.blit(player2_surface, player2_rect)  # 玩家2名稱
+
+        time = pygame.time.get_ticks()  #開啟程式後經過的時間
+        
+        # 顯示分數
+        screen.blit(score1_surface, score1_rect)  # 玩家1分數
+        screen.blit(score2_surface, score2_rect)  # 玩家2分數
+            
+        countstext = str(countdown)
+        if countdown > 0:
+            show_time(countstext, countdown)
+        else:
+            show_end()
+
+        # 顯示題目
+        screen.blit(question_surface, question_rect)
+        if (((time - start)//1000) % 2) == 0 and ((time - start)//1000) != last: #每2秒換一個數字
+            last = (time - start) // 1000
+            random_ = random.randint(0,1000)
+            question_surface = question_font.render(str(random_), False, black)  # Question更改為隨機數字
+            if countdown > 0:
+                screen.blit(question_surface, question_rect)
+            pygame.display.flip()
+            show = 0
+            continue
+        else:
+            for event in pygame.event.get():
+            # player1按 s 鍵，player2按 k 鍵
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_s:
                         show = 1
+                        score1, score2 = effect(random_, show, score1, score2)
+                        score1_surface = player_font.render(str(score1), False, black)  # 玩家1分數
                     elif event.key == pygame.K_k:
                         show = 2
-                    elif event.key == pygame.K_1:
-                        game1 = False
-                # 關閉視窗
-                if event.type == pygame.QUIT:
+                        score1, score2 = effect(random_, show, score1, score2)
+                        score2_surface = player_font.render(str(score2), False, black)  # 玩家2分數                        # 關閉視窗
+                elif event.type == pygame.QUIT:
                     pygame.quit()
-                if event.type == COUNT:
+                # 倒數
+                elif event.type == COUNT:
                     countdown = countdown - 1
                     countstext = str(countdown)
                     if countdown == -3:
                         game1 = False
-
             # 顯示拍手
-            if show == 1:
-                screen.blit(clap, (50, 350))
-            elif show == 2:
-                screen.blit(clap, (width - 50 - 260, 350))
-            # 倒數
-            if countdown > 0:
-                show_time(countstext, countdown)
-            else:
-                show_end()
-            pygame.display.update()
+        if show == 1:
+            screen.blit(clap, (50, 350))
+        elif show == 2:
+            screen.blit(clap, (width - 50 - 260, 350))
+
+        pygame.display.flip()
+
+    return score1, score2
 
 
-def game_2():
+def game_2(score1, score2):
     game2 = True
     countdown = 100
     background, black, white = set_color()
     orange = (255, 147, 0)
     size = 140
+
+    # 設定分數
+    score1_surface, score1_rect = set_score(score1, 1)
+    score2_surface, score2_rect = set_score(score2, 2)
 
     # 設定題目圖片
     image_up_before = pygame.image.load('上前.png')
@@ -409,7 +463,9 @@ def game_2():
             screen.blit(player1_surface, player1_rect)  # 玩家1名稱
             pygame.draw.rect(screen, white, (width - 20 - size, 20, size, 20 + size), 2)  # 玩家2頭像
             screen.blit(player2_surface, player2_rect)  # 玩家2名稱
+            
             # 顯示分數
+            
             screen.blit(score1_surface, score1_rect)  # 玩家1分數
             screen.blit(score2_surface, score2_rect)  # 玩家2分數
 
@@ -454,15 +510,15 @@ def game_2():
                         game2 = False
                 if event.type == pygame.QUIT:
                     pygame.quit()
+                # 倒數
                 if event.type == COUNT:
                     countdown = countdown - 1
                     countstext = str(countdown)
                     if countdown == -3:
                         game2 = False
-            # 倒數
+    return score1, score2
 
-
-def game_3():
+def game_3(score1, score2):
     game3 = True
     countdown = 30
     while game3:
@@ -485,6 +541,8 @@ def game_3():
             pygame.draw.rect(screen, white, (width - 20 - size, 20, size, 20 + size), 2)  # 玩家2頭像
             screen.blit(player2_surface, player2_rect)  # 玩家2名稱
             # 顯示分數
+            score1_surface, score1_rect = set_score(score1, 1)
+            score2_surface, score2_rect = set_score(score2, 2)
             screen.blit(score1_surface, score1_rect)  # 玩家1分數
             screen.blit(score2_surface, score2_rect)  # 玩家2分數
             # 顯示題目
@@ -522,6 +580,7 @@ def game_3():
             else:
                 show_end()
             pygame.display.flip()
+    return score1, score2
 
 def rescale_frame(frame, percent=75):
     '''調整鏡頭大小'''
@@ -566,6 +625,7 @@ def capture():
 
     cam.release()
     cv2.destroyAllWindows()
+
 def croppic():
     img_player1 = Image.open('capture_0.png')
     img_player2 = Image.open('capture_1.png')
@@ -603,11 +663,11 @@ size = 140
 # 設定玩家
 name1 = 'Name1'
 name2 = 'Name2'
-player1_surface, player1_rect = set_player(name1, 1)
-player2_surface, player2_rect = set_player(name2, 2)
+
+
 # 設定分數
-score1 = 10
-score2 = 20
+score1 = 0
+score2 = 0
 score1_surface, score1_rect = set_score(score1, 1)
 score2_surface, score2_rect = set_score(score2, 2)
 
@@ -619,13 +679,18 @@ while again:
     # game_intro(image_rule0)
     capture()
     croppic()
+    #name1, name2 = 
     prepare_window('Information')  # for 輸入玩家資訊
+    player1_surface, player1_rect = set_player(name1, 1)
+    player2_surface, player2_rect = set_player(name2, 2)
+    
     game_intro(image_rule1)
-    game_1()  # 按數字 1 鍵會跳下一頁
+    score1, score2 = game_1(score1, score2)  # 按數字 1 鍵會跳下一頁
+    
     game_intro(image_rule2)
-    game_2()  # 按數字 1 鍵會跳下一頁
+    score1, score2 = game_2(score1, score2)  # 按數字 1 鍵會跳下一頁
     game_intro(image_rule3)
-    game_3()  # 按數字 1 鍵會跳下一頁
+    score1, score2 = game_3(score1, score2)  # 按數字 1 鍵會跳下一頁
 
     # 判斷輸家贏家
     wname, wscore = compared(name1, score1, name2, score2, 'w')
