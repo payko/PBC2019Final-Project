@@ -88,26 +88,25 @@ def display(message, name1, name2, player):
     screen.blit(player1_face, (30, 60))
     screen.blit(player2_face, (width - 300, 60)) #照片位置
     screen.blit(vs, (250, 0))
-    screen.blit(nametxt1_surf, (35, 355))
-    screen.blit(nametxt2_surf, (35, 375))
-    screen.blit(nametxt3_surf, (width - 295, 355))
-    screen.blit(nametxt4_surf, (width - 295, 375))
-    
+    screen.blit(nametxt1_surf, (40, 370))
+    screen.blit(nametxt2_surf, (40, 390))
+    screen.blit(nametxt3_surf, (width - 285, 370))
+    screen.blit(nametxt4_surf, (width - 285, 390))
     if name1:
-        screen.blit(name_font.render(name1, True, black), (125, 355))
+        screen.blit(name_font.render(name1, True, black), (130, 370))
     if name2:
-        screen.blit(name_font.render(name2, True, black), (width - 205, 355))
+        screen.blit(name_font.render(name2, True, black), (width - 195, 370))
     
     txt5_surf = txt_font.render('Press Enter when done', True, (255,160,50))
     if player == 1:
-        screen.blit(txt5_surf, (35, 405))
+        screen.blit(txt5_surf, (40, 420))
     else:
-        screen.blit(txt5_surf, (width - 295, 405))
+        screen.blit(txt5_surf, (width - 285, 420))
     if len(message) != 0: 
         if player == 1:
-            screen.blit(name_font.render(message, True, black), (125, 355)) 
+            screen.blit(name_font.render(message, True, black), (130, 370)) 
         else:
-            screen.blit(name_font.render(message, True, black), (width - 205, 355))
+            screen.blit(name_font.render(message, True, black), (width - 195, 370))
 
     pygame.display.update()
 
@@ -303,14 +302,14 @@ def prepare_window():
         screen.blit(player1_face, (30, 60))
         screen.blit(player2_face, (width - 300, 60)) #照片位置
         screen.blit(vs, (250, 0))
-        screen.blit(nametxt1_surf, (35, 355))
-        screen.blit(nametxt2_surf, (35, 375))
-        screen.blit(nametxt3_surf, (width - 295, 355))
-        screen.blit(nametxt4_surf, (width - 295, 375))
+        screen.blit(nametxt1_surf, (40, 370))
+        screen.blit(nametxt2_surf, (40, 390))
+        screen.blit(nametxt3_surf, (width - 285, 370))
+        screen.blit(nametxt4_surf, (width - 285, 390))
         if name1:
-            screen.blit(name_font.render(name1, True, black), (125, 355))
+            screen.blit(name_font.render(name1, True, black), (130, 370))
         if name2:
-            screen.blit(name_font.render(name2, True, black), (width - 205, 355))
+            screen.blit(name_font.render(name2, True, black), (width - 195, 370))
         if bad:
             txt6_surf = txt_font.render('Please enter your names!', True, red)
             txt6_rect = txt6_surf.get_rect()
