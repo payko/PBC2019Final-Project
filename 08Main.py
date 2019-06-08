@@ -2,9 +2,11 @@
 #1 prepare_window()改成會回傳name1, name2
 #2 三個遊戲畫面的背景都要改成有空心(後面放頭像)
 #3 封面
-#4 第二關的計分
+#4 第一關的計分問題
 #5 RESULT的背景(WINNER vs LOSER)
 #6 改成按按鈕才拍照
+#7 音效
+#8 改第二關規則(答對加3分)
 
 import pygame
 import csv
@@ -122,21 +124,45 @@ def next_pos(num, i, j, index, player):
             j += 1
     return i, j, index
 
-def new_question(number):
+def new_question(number, questionnum):
     # input: a list
     num = []
+    qlist = []
+    reversenum = qlist.count(4) + qlist.count(5) + qlist.count(6) + qlist.count(7) 
+    for i in range (number*4):
+        
+        reversenum = qlist.count(4) + qlist.count(5) + qlist.count(6) + qlist.count(7) 
+        if questionnum < 8:
+            if len(qlist) == 0:
+                q = random.randint(0,7)
+                qlist.append(q)
+            elif reversenum / len(qlist) < questionnum /10 : 
+                q = random.randint(0,7)
+                qlist.append(q)
+            elif  reversenum / len(qlist) >= questionnum/10 :
+                q = random.randint(0,3)
+                qlist.append(q)
+        if questionnum >= 8:
+            q = random.randint(4,7)
+            qlist.append(q)
+ 
+    random.shuffle(qlist)  
+    
     for i in range(number):
         num.append([])
         for j in range(4):
-            r = random.randint(0, 7)
-            num[-1].append(r)
+            
+            num[-1].append(qlist[i*4 + j])
+            
     for i in range(number):
         num.append([])
         for j in range(4):
             r = num[i][j]
             num[-1].append(r)
+    qlist =[] 
     return num
 
+# functions for game3
 def effect3(random_word, random_color, show, score1, score2):
     word = ['RED', 'BLACK', 'GREEN', 'BLUE', 'PURPLE', 'GRAY', 'RED', 'BLACK', 'GREEN', 'BLUE', 'PURPLE', 'GRAY', 'RED', 'BLACK', 'GREEN', 'BLUE', 'PURPLE', 'GRAY', 'RED', 'BLACK', 'GREEN', 'BLUE', 'PURPLE', 'GRAY']
     color = [(255, 0, 0), (0, 0, 0), (0, 128, 0), (0, 0, 255), (128, 0, 128), (128, 128, 128)]	
@@ -313,7 +339,7 @@ def set_player(name, num):
         player_rect.center = (width - 20 - size / 2, 20 + size + 20 + 20)
     return player_surface, player_rect
 
-def set_score(score, num):
+def set_scoretxt(score, num):
     background, black, white = set_color()
     size = 140
     # 設定分數
@@ -325,6 +351,11 @@ def set_score(score, num):
     else:
         score_rect.center = (width - 20 - size - 50, 50)
     return score_surface, score_rect
+
+def set_score(score):
+    score_font = pygame.font.Font(None, 50)
+    score_surf = score_font.render(str(score), 1, (0, 0, 0))
+    return score_surf
 
 # for game runnung
 def game_1(score1, score2):
@@ -343,8 +374,8 @@ def game_1(score1, score2):
     question_rect.center = (width / 2, height / 2)
 
     # 設定分數
-    score1_surface, score1_rect = set_score(score1, 1)
-    score2_surface, score2_rect = set_score(score2, 2)
+    score1txt_surface, score1txt_rect = set_scoretxt('Score1', 1)
+    score2txt_surface, score2txt_rect = set_scoretxt('Score2', 2)
 
     # 設定拍手
     clap = pygame.image.load('clap.png')
@@ -365,9 +396,13 @@ def game_1(score1, score2):
 
         time = pygame.time.get_ticks()  #開啟程式後經過的時間
         
-        # 顯示分數
-        screen.blit(score1_surface, score1_rect)  # 玩家1分數
-        screen.blit(score2_surface, score2_rect)  # 玩家2分數
+        #顯示分數
+        screen.blit(score1txt_surface, score1txt_rect)  # 玩家1分數
+        screen.blit(score2txt_surface, score2txt_rect)  # 玩家2分數
+        score1_surface = set_score(score1)
+        screen.blit(score1_surface, (200,80))
+        score2_surface = set_score(score2)
+        screen.blit(score2_surface, (480,80))
             
         countstext = str(countdown)
         if countdown > 0:
@@ -426,8 +461,8 @@ def game_2(score1, score2):
     size = 140
 
     # 設定分數
-    score1_surface, score1_rect = set_score(score1, 1)
-    score2_surface, score2_rect = set_score(score2, 2)
+    score1txt_surface, score1txt_rect = set_scoretxt('Score1', 1)
+    score2txt_surface, score2txt_rect = set_scoretxt('Score2', 2)
 
     # 設定題目圖片
     image_up_before = pygame.image.load('上前.png')
@@ -453,14 +488,18 @@ def game_2(score1, score2):
                  image_up_after, image_down_after, image_left_after, image_right_after,
                  image_down_after_reverse, image_up_after_reverse, image_right_after_reverse, image_left_after_reverse]
 
-    number = 1
+    questionnum = 1 #第幾題了
+    number = 1 #總共幾排
     while game2:
         # 隨機產生0-7之亂數
-        num = new_question(number)
+        num = new_question(number, questionnum)
+        if questionnum < 10:
+            questionnum += 1
         if number < 5:
             number += 1
         # 判斷是否為5-4圖示的index
-        index = 0
+        index1 = 0
+        index2 = 0
         # 從1-1開始玩
         i, j, k, l = 0, 0, int(len(num) / 2), 0
         while game2:  # 遊戲迴圈
@@ -472,9 +511,8 @@ def game_2(score1, score2):
             screen.blit(player2_surface, player2_rect)  # 玩家2名稱
             
             # 顯示分數
-            
-            screen.blit(score1_surface, score1_rect)  # 玩家1分數
-            screen.blit(score2_surface, score2_rect)  # 玩家2分數
+            screen.blit(score1txt_surface, score1txt_rect)  # 玩家1分數
+            screen.blit(score2txt_surface, score2txt_rect)  # 玩家2分數
 
             # 顯示題目
             pygame.draw.rect(screen, orange, (20, 220, width / 2 - 40, 350), 2)  # 玩家1題目框框 310*350
@@ -487,6 +525,12 @@ def game_2(score1, score2):
             show_cover(num, image_cover, i + 1, player=1)
             show_cover(num, image_cover, k - int(len(num) / 2) + 1, player=2)
 
+            #顯示分數
+            score_surf = set_score(score1)
+            screen.blit(score_surf, (200,80))
+            score_surf = set_score(score2)
+            screen.blit(score_surf, (480,80))
+
             countstext = str(countdown)
             if countdown > 0:
                 show_time(countstext, countdown)
@@ -495,26 +539,65 @@ def game_2(score1, score2):
 
             pygame.display.flip()
 
-            if index == 1:  # if index == 0, 刷新題目
+            if index1 == 1:
+                score1 += 3
+                break
+            if index2 == 1:
+                score2 += 3
                 break
 
             for event in pygame.event.get():
-                # 玩家按下相對按鍵，題目變色
-                if event.type == pygame.KEYDOWN:
-                    if (event.key == pygame.K_w and (num[i][j] == 0 or num[i][j] == 4)) \
-                            or (event.key == pygame.K_s and (num[i][j] == 1 or num[i][j] == 5)) \
-                            or (event.key == pygame.K_a and (num[i][j] == 2 or num[i][j] == 6)) \
-                            or (event.key == pygame.K_d and (num[i][j] == 3 or num[i][j] == 7)):
-                        num[i][j] += 8  # 變成after的圖示
-                        i, j, index = next_pos(num, i, j, index, player=1)
-                    elif (event.key == pygame.K_UP and (num[k][l] == 0 or num[k][l] == 4)) \
-                            or (event.key == pygame.K_DOWN and (num[k][l] == 1 or num[k][l] == 5)) \
-                            or (event.key == pygame.K_LEFT and (num[k][l] == 2 or num[k][l] == 6)) \
-                            or (event.key == pygame.K_RIGHT and (num[k][l] == 3 or num[k][l] == 7)):
-                        num[k][l] += 8
-                        k, l, index = next_pos(num, k, l, index, player=2)
-                    elif event.key == pygame.K_1:
-                        game2 = False
+                if event.type == pygame.KEYDOWN: 
+                    if event.key == pygame.K_w:
+                        if num[i][j] == 0 or num[i][j] == 4:
+                            num[i][j] += 8  # 變成after的圖示
+                            i, j, index1 = next_pos(num, i, j, index1, player = 1)
+                        elif num[i][j] != 0 or num[i][j] != 4:
+                            score1 -= 1
+                         
+                    if event.key == pygame.K_s:
+                        if num[i][j] == 1 or num[i][j] == 5:
+                            num[i][j] += 8  # 變成after的圖示
+                            i, j, index1 = next_pos(num, i, j, index1, player = 1)
+                        elif num[i][j] != 1 or num[i][j] != 5:
+                            score1 -= 1
+                    if event.key == pygame.K_a:
+                        if num[i][j] == 2 or num[i][j] == 6:
+                            num[i][j] += 8  # 變成after的圖示
+                            i, j, index1 = next_pos(num, i, j, index1, player = 1)
+                        elif num[i][j] != 2 or num[i][j] != 6:
+                            score1 -= 1
+                    if event.key == pygame.K_d:
+                        if num[i][j] == 3 or num[i][j] == 7:
+                            num[i][j] += 8  # 變成after的圖示
+                            i, j, index1 = next_pos(num, i, j, index1, player = 1)
+                        elif num[i][j] != 3 or num[i][j] != 7:
+                            score1 -= 1
+                    if event.key == pygame.K_UP:
+                        if num[k][l] == 0 or num[k][l] == 4:
+                            num[k][l] += 8  # 變成after的圖示
+                            k, l, index2 = next_pos(num, k, l, index2, player = 2)
+                        elif num[i][j] != 0 or num[i][j] != 4:
+                            score2 -= 1
+
+                    if event.key == pygame.K_DOWN:
+                        if num[k][l] == 1 or num[k][l] == 5:
+                            num[k][l] += 8  # 變成after的圖示
+                            k, l, index2 = next_pos(num, k, l, index2, player = 2)
+                        elif num[i][j] != 1 or num[i][j] != 5:
+                            score2 -= 1
+                    if event.key == pygame.K_LEFT:
+                        if num[k][l] == 2 or num[k][l] == 6:
+                            num[k][l] += 8  # 變成after的圖示
+                            k, l, index2 = next_pos(num, k, l, index2, player = 2)
+                        elif num[i][j] != 2 or num[i][j] != 6:
+                            score2 -= 1
+                    if event.key == pygame.K_RIGHT:
+                        if num[k][l] == 3 or num[k][l] == 7:
+                            num[k][l] += 8  # 變成after的圖示
+                            k, l, index2 = next_pos(num, k, l, index2, player = 2)
+                        elif num[i][j] != 3 or num[i][j] != 7:
+                            score2 -= 1
                 if event.type == pygame.QUIT:
                     pygame.quit()
                 # 倒數
@@ -533,8 +616,8 @@ def game_3(score1, score2):
     player_font = pygame.font.Font(None, 32)
 
     # 設定分數
-    score1_surface, score1_rect = set_score(score1, 1)
-    score2_surface, score2_rect = set_score(score2, 2)
+    score1txt_surface, score1txt_rect = set_scoretxt('Score1', 1)
+    score2txt_surface, score2txt_rect = set_scoretxt('Score2', 2)
 
     # 設定題目
     random_word = random.choice(['RED', 'BLACK', 'GREEN', 'BLUE', 'PURPLE', 'GRAY', 'RED', 'BLACK', 'GREEN', 'BLUE', 'PURPLE', 'GRAY', 'RED', 'BLACK', 'GREEN', 'BLUE', 'PURPLE', 'GRAY', 'RED', 'BLACK', 'GREEN', 'BLUE', 'PURPLE', 'GRAY'])
@@ -560,9 +643,13 @@ def game_3(score1, score2):
                 
         time = pygame.time.get_ticks()  #開啟程式後經過的時間
         
-        # 顯示分數
-        screen.blit(score1_surface, score1_rect)  # 玩家1分數
-        screen.blit(score2_surface, score2_rect)  # 玩家2分數
+        #顯示分數
+        screen.blit(score1txt_surface, score1txt_rect)  # 玩家1分數
+        screen.blit(score2txt_surface, score2txt_rect)  # 玩家2分數
+        score1_surface = set_score(score1)
+        screen.blit(score1_surface, (200,80))
+        score2_surface = set_score(score2)
+        screen.blit(score2_surface, (480,80))
         
         countstext = str(countdown)
         if countdown > 0:
@@ -701,8 +788,7 @@ name2 = 'Name2'
 # 設定分數
 score1 = 0
 score2 = 0
-score1_surface, score1_rect = set_score(score1, 1)
-score2_surface, score2_rect = set_score(score2, 2)
+
 
 # run
 again = True
