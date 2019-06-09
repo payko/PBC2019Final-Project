@@ -63,8 +63,10 @@ def ask_name(player, name1, name2):
 
     return current_string.capitalize() # this is the answer
 
-def display(message, name1, name2, player): 
-    orange = (255, 147, 0)
+def display(message, name1, name2, player):
+
+    #orange = (255, 147, 0)
+    black = (0, 0, 0)
     player1_face = pygame.image.load('player1.png')
     player2_face = pygame.image.load('player2.png')
     vs = pygame.image.load('vs.png')
@@ -72,37 +74,35 @@ def display(message, name1, name2, player):
     player2_face.convert()
 
     # 設定文字
-    name_font = pygame.font.Font(None, 32)
-    txt_font = pygame.font.Font(None, 30)
-    nametxt1_surf = txt_font.render('Player 1: ____________', True, orange)
-    nametxt2_surf = txt_font.render('(Press s to enter name)', True, orange)
-    nametxt3_surf = txt_font.render('Player 2: ____________', True, orange)
-    nametxt4_surf = txt_font.render('(Press k to enter name)', True, orange)
-    
+    nametxt1_surf = txt_font.render('Player 1: ____________', True, black)
+    nametxt2_surf = txt_font.render('(Press s to enter name)', True, black)
+    nametxt3_surf = txt_font.render('Player 2: ____________', True, black)
+    nametxt4_surf = txt_font.render('(Press k to enter name)', True, black)
+
     screen.blit(background_pic2, (0, 0))
     screen.blit(player1_face, (30, 60))
-    screen.blit(player2_face, (width - 300, 60)) #照片位置
+    screen.blit(player2_face, (width - 300, 60))  # 照片位置
     screen.blit(vs, (250, 0))
-    screen.blit(nametxt1_surf, (35, 355))
-    screen.blit(nametxt2_surf, (35, 375))
-    screen.blit(nametxt3_surf, (width - 295, 355))
-    screen.blit(nametxt4_surf, (width - 295, 375))
-    
+    screen.blit(nametxt1_surf, (35, 400))
+    screen.blit(nametxt2_surf, (35, 420))
+    screen.blit(nametxt3_surf, (width - 295, 400))
+    screen.blit(nametxt4_surf, (width - 295, 420))
+
     if name1:
-        screen.blit(name_font.render(name1, True, black), (125, 355))
+        screen.blit(name_font.render(name1, True, black), (125, 400))
     if name2:
-        screen.blit(name_font.render(name2, True, black), (width - 205, 355))
-    
-    txt5_surf = txt_font.render('Press Enter when done', True, (255,160,50))
+        screen.blit(name_font.render(name2, True, black), (width - 205, 400))
+
+    txt5_surf = txt_font.render('Press Enter when done', True, (0, 0, 0))
     if player == 1:
-        screen.blit(txt5_surf, (35, 405))
+        screen.blit(txt5_surf, (35, 450))
     else:
-        screen.blit(txt5_surf, (width - 295, 405))
-    if len(message) != 0: 
+        screen.blit(txt5_surf, (width - 295, 450))
+    if len(message) != 0:
         if player == 1:
-            screen.blit(name_font.render(message, True, black), (125, 355)) 
+            screen.blit(name_font.render(message, True, black), (125, 400))
         else:
-            screen.blit(name_font.render(message, True, black), (width - 205, 355))
+            screen.blit(name_font.render(message, True, black), (width - 205, 400))
 
     pygame.display.update()
 
@@ -304,29 +304,26 @@ def prepare_window():
     name2 = ""
 
     # 設定文字
-    name_font = pygame.font.Font(None, 32)
-    txt_font = pygame.font.Font(None, 30)
-    nametxt1_surf = txt_font.render('Player 1: __________', True, orange)
-    nametxt2_surf = txt_font.render('(Press s to enter name)', True, orange)
-    nametxt3_surf = txt_font.render('Player 2: __________', True, orange)
-    nametxt4_surf = txt_font.render('(Press k to enter name)', True, orange)
+    nametxt1_surf = txt_font.render('Player 1: __________', True, black)
+    nametxt2_surf = txt_font.render('(Press s to enter name)', True, black)
+    nametxt3_surf = txt_font.render('Player 2: __________', True, black)
+    nametxt4_surf = txt_font.render('(Press k to enter name)', True, black)
 
     stay = True
     bad = False
     while stay:
         screen.blit(background_pic2, (0, 0))
-        screen.fill(background)
         screen.blit(player1_face, (30, 60))
-        screen.blit(player2_face, (width - 300, 60)) #照片位置
+        screen.blit(player2_face, (width - 300, 60))  # 照片位置
         screen.blit(vs, (250, 0))
-        screen.blit(nametxt1_surf, (35, 355))
-        screen.blit(nametxt2_surf, (35, 375))
-        screen.blit(nametxt3_surf, (width - 295, 355))
-        screen.blit(nametxt4_surf, (width - 295, 375))
+        screen.blit(nametxt1_surf, (35, 400))
+        screen.blit(nametxt2_surf, (35, 420))
+        screen.blit(nametxt3_surf, (width - 295, 400))
+        screen.blit(nametxt4_surf, (width - 295, 420))
         if name1:
-            screen.blit(name_font.render(name1, True, black), (125, 355))
+            screen.blit(name_font.render(name1, True, black), (125, 400))
         if name2:
-            screen.blit(name_font.render(name2, True, black), (width - 205, 355))
+            screen.blit(name_font.render(name2, True, black), (width - 205, 400))
         if bad:
             txt6_surf = txt_font.render('Please enter your names!', True, red)
             txt6_rect = txt6_surf.get_rect()
@@ -334,8 +331,8 @@ def prepare_window():
             screen.blit(txt6_surf, txt6_rect)
 
         for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN: 
-                if event.key == pygame.K_s and name1 == "": 
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_s and name1 == "":
                     name1 = ask_name(1, name1, name2)
                     if name1:
                         bad = False
@@ -899,8 +896,8 @@ def intro_0():
 # 建立視窗
 width = 700
 height = 600
-button_x = 500
-button_y = 500
+button_x = 540
+button_y = 480
 screen = pygame.display.set_mode((width, height))
 update_rect = pygame.Rect(0, 300, 700, 250)
 pygame.display.set_caption('善挑')
@@ -918,6 +915,8 @@ background_pic1 = pygame.image.load('background_pic1.png')
 background_pic2 = pygame.image.load('background_pic2.jpg')
 beginning_enter = pygame.image.load('beginingenter.png')
 intro_background = pygame.image.load('introbg.png')
+name_font = pygame.font.SysFont('comicsansmsttf', 25)
+txt_font = pygame.font.SysFont('comicsansmsttf', 20)
 
 
 background, black, white = set_color()
