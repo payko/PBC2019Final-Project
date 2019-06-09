@@ -955,4 +955,4 @@ while again:
 
     result_window('Result')  # for 最終輸贏畫面
     board_window(wname, wscore, lname, lscore)  # for 排行榜
-    ending = ending_window('Again?')
+    again = ending_window('Again?')
