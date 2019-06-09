@@ -230,10 +230,8 @@ def new_question(number, questionnum):
 
 # functions for game3
 def effect3(random_word, random_color, show, score1, score2):
-    word = ['RED', 'BLACK', 'GREEN', 'BLUE', 'PURPLE', 'GRAY', 'RED', 'BLACK', 'GREEN', 'BLUE', 'PURPLE', 'GRAY', 'RED', 'BLACK', 'GREEN', 'BLUE', 'PURPLE', 'GRAY', 'RED', 'BLACK', 'GREEN', 'BLUE', 'PURPLE', 'GRAY']
-    color = [(255, 0, 0), (0, 0, 0), (0, 128, 0), (0, 0, 255), (128, 0, 128), (128, 128, 128)]  
      
-    if (word.index(random_word) % 6) == color.index(random_color):
+    if word.index(random_word) == color.index(random_color) or color.index(random_color) > 5 :
         if show == 1:
             score1 += 2 # 加分音效
         elif show == 2:
@@ -507,6 +505,8 @@ def game_1(score1, score2):
         
     start = pygame.time.get_ticks() #開啟程式到按下開始鍵經過的時間 也就是閱讀遊戲規則的時間
     last = 0
+    getpoints = False
+
      
     while game1:
         screen.fill(background)
@@ -545,19 +545,23 @@ def game_1(score1, score2):
                 screen.blit(question_surface, question_rect)
             pygame.display.flip()
             show = 0
+            getpoints = False
             continue
         else:
             for event in pygame.event.get():
             # player1按 s 鍵，player2按 k 鍵
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_s:
+                    if event.key == pygame.K_s and getpoints == False:
                         show = 1
                         score1, score2 = effect(random_, show, score1, score2)
                         score1_surface = player_font.render(str(score1), True, black)  # 玩家1分數
-                    elif event.key == pygame.K_k:
+                        getpoints = True
+                    elif event.key == pygame.K_k and getpoints == False:
                         show = 2
                         score1, score2 = effect(random_, show, score1, score2)
-                        score2_surface = player_font.render(str(score2), True, black)  # 玩家2分數                        # 關閉視窗
+                        score2_surface = player_font.render(str(score2), True, black)  # 玩家2分數                        
+                        getpoints = True
+				# 關閉視窗
                 elif event.type == pygame.QUIT:
                     pygame.quit()
                 # 倒數
@@ -743,8 +747,13 @@ def game_3(score1, score2):
     score2txt_surface, score2txt_rect = set_scoretxt('Score2', 2)
 
     # 設定題目
-    random_word = random.choice(['RED', 'BLACK', 'GREEN', 'BLUE', 'PURPLE', 'GRAY', 'RED', 'BLACK', 'GREEN', 'BLUE', 'PURPLE', 'GRAY', 'RED', 'BLACK', 'GREEN', 'BLUE', 'PURPLE', 'GRAY', 'RED', 'BLACK', 'GREEN', 'BLUE', 'PURPLE', 'GRAY'])
-    random_color = random.choice([(255, 0, 0), (0, 0, 0), (0, 128, 0), (0, 0, 255), (128, 0, 128), (128, 128, 128)])
+    word = ['RED', 'BLACK', 'GREEN', 'BLUE', 'PURPLE', 'GRAY']
+    random_word = random.choice(word)    # 隨機選一單字
+    color = [(255, 0, 0), (0, 0, 0), (0, 128, 0), (0, 0, 255), (128, 0, 128), (128, 128, 128)]
+    for i in range(5):   # 把隨機選到的單字的色號增加五個 提高正確色號配正確單字的機率
+        color.append(color[word.index(random_word)])
+    random_color = random.choice(color)    # 隨機選一色號
+	
     question_font = pygame.font.Font(None, 60)  # 字體大小 = 60
     question_surface = question_font.render(str(random_word), True, random_color)  # Question更改為隨機單字
     question_rect = question_surface.get_rect()
@@ -755,8 +764,10 @@ def game_3(score1, score2):
     show = 0  # 不顯示拍手 ## 換新題目show要重設為0
     start = pygame.time.get_ticks() #開啟程式到按下開始鍵經過的時間 也就是閱讀遊戲規則的時間
     last = 0
+    getpoints = False
     while game3:
         screen.fill(background)
+        color = [(255, 0, 0), (0, 0, 0), (0, 128, 0), (0, 0, 255), (128, 0, 128), (128, 128, 128)]
 
         # 顯示玩家
         pygame.draw.rect(screen, white, (20, 20, size, size + 20), 2)  # 玩家1頭像
@@ -783,28 +794,35 @@ def game_3(score1, score2):
 
         if (((time - start)//1000) % 0.5) == 0 and ((time - start)//1000) != last: #每半秒換一次題目
             last = (time - start) // 1000
-            random_word = random.choice(['RED', 'BLACK', 'GREEN', 'BLUE', 'PURPLE', 'GRAY'])
-            random_color = random.choice([(255, 0, 0), (0, 0, 0), (0, 128, 0), (0, 0, 255), (128, 0, 128), (128, 128, 128)])
+			
+			random_word = random.choice(word)    # 隨機選一單字
+            for i in range(5):   # 把隨機選到的單字的色號增加五個 提高正確色號配正確單字的機率
+                color.append(color[word.index(random_word)])
+            random_color = random.choice(color)    # 隨機選一色號
+            
             question_surface = question_font.render(str(random_word), True, random_color)  # Question更改為隨機單字
             question_rect = question_surface.get_rect()
             question_rect.center = (width / 2, height / 2)
             screen.blit(question_surface, question_rect)
             pygame.display.flip()
             show = 0
+            getpoints = False
             continue
         else:
             for event in pygame.event.get():
             # player1按 s 鍵，player2按 k 鍵
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_s:
+                    if event.key == pygame.K_s and getpoints == False:
                         show = 1
                         score1, score2 = effect3(random_word, random_color, show, score1, score2)
                         score1_surface = player_font.render(str(score1), True, black)  # 玩家1分數
-                    elif event.key == pygame.K_k:
+                        getpoints = True
+                    elif event.key == pygame.K_k and getpoints = False:
                         show = 2
                         score1, score2 = effect3(random_word, random_color, show, score1, score2)
                         score2_surface = player_font.render(str(score2), True, black)  # 玩家2分數    
-                # 關閉視窗
+                        getpoints = True
+			    # 關閉視窗
                 elif event.type == pygame.QUIT:
                     pygame.quit()
                 # 倒數
