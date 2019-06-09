@@ -414,14 +414,10 @@ def board_window(wn, ws, ln, ls):
         pygame.display.flip()
         mouse = pygame.mouse.get_pos()
 
-def again_window(string):
+def ending_window(string):
     stay = True
-    screen.fill(background)
-    output_font = pygame.font.Font(None, 60)  # 字體大小 = 60
-    output_surface = output_font.render(string, True, black)
-    output_rect = output_surface.get_rect()
-    output_rect.center = (width / 2, height / 2)
-    screen.blit(output_surface, output_rect)
+    screen.blit(ending_background, (0, 0))
+
     while stay:
         for event in pygame.event.get():
             # 關閉視窗
@@ -429,14 +425,14 @@ def again_window(string):
                 pygame.quit()
                 quit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if 500 < mouse[0] < 630 and 515 < mouse[1] < 565:  # 給Again button設定的範圍
+                if 170 < mouse[0] < 310 and 280 < mouse[1] < 350:  # 給Again button設定的範圍
                     again = True
                     stay = False
-                elif 280 < mouse[0] < 430 and 515 < mouse[1] < 565:  # 給End button設定的範圍
+                elif 390 < mouse[0] < 530 and 280 < mouse[1] < 350:  # 給End button設定的範圍
                     again = False
                     stay = False
-        screen.blit(image_again_button, (button_x, button_y))
-        screen.blit(image_end_button, (width / 2 - 40, 507))
+        screen.blit(image_again_yes_button, (width / 2 - 180, height / 2 - 20))
+        screen.blit(image_again_no_button, (width / 2 + 40, height / 2 - 20))
         pygame.display.flip()
         mouse = pygame.mouse.get_pos()
     return again
@@ -917,7 +913,9 @@ beginning_enter = pygame.image.load('beginingenter.png')
 intro_background = pygame.image.load('introbg.png')
 name_font = pygame.font.SysFont('comicsansmsttf', 25)
 txt_font = pygame.font.SysFont('comicsansmsttf', 20)
-
+ending_background = pygame.image.load('background_end.png')
+image_again_yes_button = pygame.image.load('Yes_button.png')
+image_again_no_button = pygame.image.load('No_button.png')
 
 background, black, white = set_color()
 size = 140
@@ -957,4 +955,4 @@ while again:
 
     result_window('Result')  # for 最終輸贏畫面
     board_window(wname, wscore, lname, lscore)  # for 排行榜
-    again = again_window('Again?')
+    ending = ending_window('Again?')
