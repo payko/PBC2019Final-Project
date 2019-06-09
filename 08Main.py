@@ -671,13 +671,13 @@ def game_2(score1, score2):
 
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN: 
+                    #玩家1輸入時
                     if event.key == pygame.K_w:
                         if num[i][j] == 0 or num[i][j] == 4:
                             num[i][j] += 8  # 變成after的圖示&簡易音效
                             i, j, index1 = next_pos(num, i, j, index1, player = 1)
                         elif num[i][j] != 0 or num[i][j] != 4:
                             score1 -= 1 #錯誤分數-1&音效
-                         
                     if event.key == pygame.K_s:
                         if num[i][j] == 1 or num[i][j] == 5:
                             num[i][j] += 8  # 變成after的圖示&簡易音效
@@ -696,13 +696,13 @@ def game_2(score1, score2):
                             i, j, index1 = next_pos(num, i, j, index1, player = 1)
                         elif num[i][j] != 3 or num[i][j] != 7:
                             score1 -= 1 #錯誤分數-1&音效
+                    #玩家2輸入時
                     if event.key == pygame.K_UP:
                         if num[k][l] == 0 or num[k][l] == 4:
                             num[k][l] += 8  # 變成after的圖示&簡易音效
                             k, l, index2 = next_pos(num, k, l, index2, player = 2)
                         elif num[i][j] != 0 or num[i][j] != 4:
                             score2 -= 1 #錯誤分數-1&音效
-
                     if event.key == pygame.K_DOWN:
                         if num[k][l] == 1 or num[k][l] == 5:
                             num[k][l] += 8  # 變成after的圖示&簡易音效
