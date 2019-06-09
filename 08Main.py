@@ -484,7 +484,7 @@ def set_score(score):
 # for game runnung
 def game_1(score1, score2):
     game1 = True
-    countdown = 60
+    countdown = 5
     
     background, black, white = set_color()
     size = 140
@@ -549,7 +549,7 @@ def game_1(score1, score2):
         else:
             for event in pygame.event.get():
             # player1按 s 鍵，player2按 k 鍵
-                if event.type == pygame.KEYDOWN:
+                if event.type == pygame.KEYDOWN and countdown > 0:
                     if event.key == pygame.K_s:
                         show = 1
                         score1, score2 = effect(random_, show, score1, score2)
@@ -578,7 +578,7 @@ def game_1(score1, score2):
 
 def game_2(score1, score2):
     game2 = True
-    countdown = 90
+    countdown = 5
     background, black, white = set_color()
     orange = (255, 147, 0)
     size = 140
@@ -670,7 +670,7 @@ def game_2(score1, score2):
                 break
 
             for event in pygame.event.get():
-                if event.type == pygame.KEYDOWN: 
+                if event.type == pygame.KEYDOWN and countdown > 0: 
                     #玩家1輸入時
                     if event.key == pygame.K_w:
                         if num[i][j] == 0 or num[i][j] == 4:
@@ -733,7 +733,7 @@ def game_2(score1, score2):
 
 def game_3(score1, score2):
     game3 = True
-    countdown = 50
+    countdown = 5
     background, black, white = set_color()
     size = 140
     player_font = pygame.font.Font(None, 32)
@@ -788,14 +788,15 @@ def game_3(score1, score2):
             question_surface = question_font.render(str(random_word), True, random_color)  # Question更改為隨機單字
             question_rect = question_surface.get_rect()
             question_rect.center = (width / 2, height / 2)
-            screen.blit(question_surface, question_rect)
+            if countdown > 0:
+                screen.blit(question_surface, question_rect)
             pygame.display.flip()
             show = 0
             continue
         else:
             for event in pygame.event.get():
             # player1按 s 鍵，player2按 k 鍵
-                if event.type == pygame.KEYDOWN:
+                if event.type == pygame.KEYDOWN and countdown > 0:
                     if event.key == pygame.K_s:
                         show = 1
                         score1, score2 = effect3(random_word, random_color, show, score1, score2)
