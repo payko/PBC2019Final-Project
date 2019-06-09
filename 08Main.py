@@ -933,8 +933,8 @@ def intro_0():
 # 建立視窗
 width = 700
 height = 600
-button_x = 460
-button_y = 550
+button_x = 540
+button_y = 480
 screen = pygame.display.set_mode((width, height))
 update_rect = pygame.Rect(0, 300, 700, 250)
 pygame.display.set_caption('善挑')
