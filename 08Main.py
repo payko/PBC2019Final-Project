@@ -1,12 +1,9 @@
 ##needs:
-
-#2 三個遊戲畫面的背景都要改成有空心(後面放頭像)
-#3 封面
-#4 第一關的計分問題
-#5 RESULT的背景(WINNER vs LOSER)
-#6 改成按按鈕才拍照
-#7 音效
-#8 剛開始的enter 閃太快
+#1 第一關的計分問題
+#2 遊戲畫面頭像
+#3 RESULT的背景(WINNER vs LOSER)
+#4 音效
+#5 
 
 
 import pygame, sys, os 
@@ -882,10 +879,7 @@ def croppic():
     white.paste(newimg_player2, (10, 10))
     white.save('player2.png')
 
-
-
 def intro_0():
-
     screen.blit(intro_background, (0, 0))
     running = True
 
@@ -897,6 +891,8 @@ def intro_0():
             if event.type == KEYDOWN and event.key == K_RETURN: # enter鍵
                 running = False
         pygame.display.update()
+
+
 # main funtions
 # 建立視窗
 width = 700
