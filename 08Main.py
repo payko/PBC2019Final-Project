@@ -275,6 +275,26 @@ def blank_window(string, image_button, background_image):
         pygame.display.flip()
         mouse = pygame.mouse.get_pos()
 
+def beginning_window():
+    
+    counter = 0
+    running = True
+    
+    while running:
+        screen.fill((0, 0, 0))
+        screen.blit(background_pic1, (0, 0))
+        if counter % 2 == 0:
+            screen.blit(beginning_enter, (width / 2 - 120, height - 120))
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+            if event.type == KEYDOWN and event.key == K_RETURN: # enter鍵
+                running = False
+            if event.type == COUNT:
+                counter += 1
+        pygame.display.update()
+
 def prepare_window():
     red = (255, 0, 0)
     orange = (255, 147, 0)
@@ -490,8 +510,7 @@ def game_1(score1, score2):
         
     start = pygame.time.get_ticks() #開啟程式到按下開始鍵經過的時間 也就是閱讀遊戲規則的時間
     last = 0
-        
-        
+     
     while game1:
         screen.fill(background)
                 
@@ -863,23 +882,7 @@ def croppic():
     white.paste(newimg_player2, (10, 10))
     white.save('player2.png')
 
-def begining():
-    screen.blit(background_pic1, (0, 0))
-    counter = 0
-    running = True
-    while running:
-        counter +=1
-        if counter % 6 == 0:
-            screen.blit(begining_enter, (width / 2 - 120, height - 120))
-        else:
-            screen.fill((0, 0, 0))
-            screen.blit(background_pic1, (0, 0))
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-            if event.type == KEYDOWN and event.key == K_RETURN: # enter鍵
-                running = False
-        pygame.display.update()
+
 
 def intro_0():
 
@@ -915,7 +918,7 @@ image_end_button = pygame.image.load('遊戲結束.png')
 image_boardbg = pygame.image.load('排行榜.png')
 background_pic1 = pygame.image.load('background_pic1.png')
 background_pic2 = pygame.image.load('background_pic2.jpg')
-begining_enter = pygame.image.load('beginingenter.png')
+beginning_enter = pygame.image.load('beginingenter.png')
 intro_background = pygame.image.load('introbg.png')
 
 
@@ -934,7 +937,7 @@ again = True
 while again:
     again = False
     #blank_window('Beginning', image_start_button, None)  # for 遊戲開始畫面
-    begining()
+    beginning_window()
     intro_0()
     # game_intro(image_rule0)
     capture()
