@@ -62,15 +62,15 @@ class Game_3():
             self.color = [(255, 0, 0), (0, 0, 0), (0, 128, 0), (0, 0, 255), (128, 0, 128), (128, 128, 128)]
             for i in range(5):   # 把隨機選到的單字的色號增加五個 提高正確色號配正確單字的機率
                 self.color.append(self.color[self.word.index(self.random_word)])
-
             self.random_color = random.choice(self.color)    # 隨機選一色號
+            
             self.question_font = pygame.font.Font(None, 60)  # 字體大小 = 60
             self.question_surface = self.question_font.render(str(self.random_word), False, self.random_color)  # Question更改為隨機單字
             self.question_rect = self.question_surface.get_rect()
             self.question_rect.center = (width / 2, height / 2)
 
         # 設定拍手
-            self.clap = pygame.image.load('clap.png')
+            self.clap = pygame.image.load('C:\\Users\\Zoe\\Documents\\GitHub\\PBC2019Final-Project\\clap.png')
             self.show = 0  # 不顯示拍手 ## 換新題目show要重設為0
             self.operating()
 
@@ -139,12 +139,13 @@ class Game_3():
 
         #遊戲規則
         def effect(self):
-         
+            # 正確得2分
             if self.word.index(self.random_word) == self.color.index(self.random_color) or self.color.index(self.random_color) > 5 :
                 if self.show == 1:
                     self.score1 += 2
                 elif self.show == 2:
                     self.score2 += 2
+            # 錯誤扣1分
             else:
                 if self.show == 1:
                     self.score1 -= 1
@@ -164,9 +165,9 @@ screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption('第三關 顏色辨別')
 
 # 設定規則
-image_rule = pygame.image.load('第三關遊戲規則.png')
+image_rule = pygame.image.load('C:\\Users\\Zoe\\Documents\\GitHub\\PBC2019Final-Project\\第三關遊戲規則.png')
 
 # 設定遊戲開始按鈕
-image_button = pygame.image.load('遊戲開始按鈕.png')
+image_button = pygame.image.load('C:\\Users\\Zoe\\Desktop\\PBC2019Final-Project-master\\遊戲開始按鈕.png')
 game_intro()
 g3 = Game_3()

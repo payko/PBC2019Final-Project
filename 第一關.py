@@ -92,7 +92,7 @@ class Game_1():
 
             # 顯示題目
                 screen.blit(self.question_surface, self.question_rect)
-                if (((self.time - self.start)//1000) % 2) == 0 and ((self.time - self.start)//1000) != self.last: #每2秒換一個數字
+                if (((self.time - self.start)//1000) % 2) == 0 and ((self.time - self.start)//1000) != self.last: # 每2秒換一個數字
                     self.last = (self.time - self.start) // 1000
                     self.random_ = random.randint(0,1000)
                     self.question_surface = self.question_font.render(str(self.random_), False, self.black)  # Question更改為隨機數字
@@ -128,11 +128,13 @@ class Game_1():
 
         #遊戲規則
         def effect(self):
+            #正確得2分
             if self.random_ % 3 == 0 or '3' in str(self.random_):
                 if self.show == 1:
-                    self.score1 += 2
+                    self.score1 += 2   
                 elif self.show == 2:
                     self.score2 += 2
+            #錯誤扣1分
             else:
                 if self.show == 1:
                     self.score1 -= 1
