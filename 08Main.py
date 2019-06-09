@@ -82,7 +82,7 @@ def display(message, name1, name2, player):
     nametxt3_surf = txt_font.render('Player 2: ____________', True, orange)
     nametxt4_surf = txt_font.render('(Press k to enter name)', True, orange)
     
-    screen.fill(background)
+    screen.blit(background_pic2, (0, 0))
     screen.blit(player1_face, (30, 60))
     screen.blit(player2_face, (width - 300, 60)) #照片位置
     screen.blit(vs, (250, 0))
@@ -317,6 +317,7 @@ def prepare_window():
     stay = True
     bad = False
     while stay:
+        screen.blit(background_pic2, (0, 0))
         screen.fill(background)
         screen.blit(player1_face, (30, 60))
         screen.blit(player2_face, (width - 300, 60)) #照片位置
