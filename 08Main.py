@@ -136,14 +136,14 @@ def write_board(name, score, Board):
 def effect(random_, show, score1, score2):
     if random_ % 3 == 0 or '3' in str(random_):
         if show == 1:
-            score1 += 2
+            score1 += 2 # 加分音效
         elif show == 2:
-            score2 += 2
+            score2 += 2 # 加分音效
     else:
         if show == 1:
-            score1 -= 1
+            score1 -= 1 # 扣分音效
         elif show == 2:
-                score2 -= 1
+            score2 -= 1 # 扣分音效
             
     return score1, score2
 
@@ -238,14 +238,14 @@ def effect3(random_word, random_color, show, score1, score2):
      
     if (word.index(random_word) % 6) == color.index(random_color):
         if show == 1:
-            score1 += 2
+            score1 += 2 # 加分音效
         elif show == 2:
-            score2 += 2
+            score2 += 2 # 加分音效
     else:
         if show == 1:
-            score1 -= 1
+            score1 -= 1 # 扣分音效
         elif show == 2:
-            score2 -= 1
+            score2 -= 1 # 扣分音效
                     
     return score1, score2
 
