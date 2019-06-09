@@ -295,7 +295,9 @@ def beginning_window():
 def prepare_window():
     red = (255, 0, 0)
     orange = (255, 147, 0)
+    global player1_face
     player1_face = pygame.image.load('player1.png')
+    global player2_face
     player2_face = pygame.image.load('player2.png')
     vs = pygame.image.load('vs.png')
     player1_face.convert()
@@ -359,7 +361,24 @@ def game_intro(image_rule):
     blank_window(None, image_start_button, image_rule)
 
 def result_window(string):
-    blank_window(string, image_next_button, None)
+    player1_face = pygame.image.load('player1.png')
+    player2_face = pygame.image.load('player2.png')
+    stay = True
+    while stay:
+        screen.blit(background_pic2, (0, 0))
+        screen.blit(player1_face, (30, 60))
+        screen.blit(player2_face, (width - 300, 60))  # 照片位置
+        for event in pygame.event.get():
+            # 關閉視窗
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if 500 < mouse[0] < 630 and 515 < mouse[1] < 565:  # 給button設定的範圍
+                    stay = False
+        screen.blit(image_next_button, (button_x, button_y))
+        pygame.display.flip()
+        mouse = pygame.mouse.get_pos()
 
 def board_window(wn, ws, ln, ls):
     # input: 贏家名字、得分、輸家名字、得分
@@ -501,16 +520,21 @@ def game_1(score1, score2):
         
     start = pygame.time.get_ticks() #開啟程式到按下開始鍵經過的時間 也就是閱讀遊戲規則的時間
     last = 0
-     
-    while game1:
-        screen.fill(background)
-                
-        # 顯示玩家
-        pygame.draw.rect(screen, white, (20, 20, size, size + 20), 2)  # 玩家1頭像
-        screen.blit(player1_surface, player1_rect)  # 玩家1名稱
-        pygame.draw.rect(screen, white, (width - 20 - size, 20, size, 20 + size), 2)  # 玩家2頭像                screen.blit(player2_surface, player2_rect)  # 玩家2名稱
-        screen.blit(player2_surface, player2_rect)  # 玩家2名稱
+    # 設定頭像
+    global player1_image
+    player1_image = pygame.image.load('forgame_player1.png')
+    global player2_image
+    player2_image = pygame.image.load('forgame_player2.png')
 
+
+    while game1:
+        screen.blit(background_pic2, (0, 0))
+
+        # 顯示玩家
+        screen.blit(player1_image, (20, 20))  # 玩家1頭像
+        screen.blit(player1_surface, player1_rect)  # 玩家1名稱
+        screen.blit(player2_image, (width/2 + 200, 20))  # 玩家1頭像  # 玩家2頭像
+        screen.blit(player2_surface, player2_rect)  # 玩家2名稱
         time = pygame.time.get_ticks()  #開啟程式後經過的時間
         
         #顯示分數
@@ -620,11 +644,11 @@ def game_2(score1, score2):
         # 從1-1開始玩
         i, j, k, l = 0, 0, int(len(num) / 2), 0
         while game2:  # 遊戲迴圈
-            screen.fill(background)
+            screen.blit(background_pic2, (0, 0))
             # 顯示玩家
-            pygame.draw.rect(screen, white, (20, 20, size, size + 20), 2)  # 玩家1頭像
+            screen.blit(player1_image, (20, 20))  # 玩家1頭像
             screen.blit(player1_surface, player1_rect)  # 玩家1名稱
-            pygame.draw.rect(screen, white, (width - 20 - size, 20, size, 20 + size), 2)  # 玩家2頭像
+            screen.blit(player2_image, (width / 2 + 200, 20))  # 玩家1頭像  # 玩家2頭像
             screen.blit(player2_surface, player2_rect)  # 玩家2名稱
             
             # 顯示分數
@@ -750,12 +774,13 @@ def game_3(score1, score2):
     start = pygame.time.get_ticks() #開啟程式到按下開始鍵經過的時間 也就是閱讀遊戲規則的時間
     last = 0
     while game3:
-        screen.fill(background)
+        screen.blit(background_pic2, (0, 0))
+
 
         # 顯示玩家
-        pygame.draw.rect(screen, white, (20, 20, size, size + 20), 2)  # 玩家1頭像
+        screen.blit(player1_image, (20, 20))  # 玩家1頭像
         screen.blit(player1_surface, player1_rect)  # 玩家1名稱
-        pygame.draw.rect(screen, white, (width - 20 - size, 20, size, 20 + size), 2)  # 玩家2頭像
+        screen.blit(player2_image, (width / 2 + 200, 20))  # 玩家1頭像  # 玩家2頭像
         screen.blit(player2_surface, player2_rect)  # 玩家2名稱
                 
         time = pygame.time.get_ticks()  #開啟程式後經過的時間
@@ -873,6 +898,14 @@ def croppic():
     white.save('player1.png')
     white.paste(newimg_player2, (10, 10))
     white.save('player2.png')
+    '''image for gaming'''
+    player1 = Image.open('player1.png')
+    player2 = Image.open('player2.png')
+    forgame_player1 = player1.resize((132, 110), Image.ANTIALIAS)
+    forgame_player2 = player2.resize((132, 110), Image.ANTIALIAS)
+    forgame_player1.save('forgame_player1.png')
+    forgame_player2.save('forgame_player2.png')
+
 
 def intro_0():
     screen.blit(intro_background, (0, 0))
