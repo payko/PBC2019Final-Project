@@ -394,9 +394,9 @@ def result_window(n1, s1, n2, s2, winner):
         win_surface = win_font.render('WINNER', True, red)
         win_rect = win_surface.get_rect()
         if winner == 1:
-            win_rect.center = (150, 440)
+            win_rect.center = (160, 440)
         elif winner == 2:
-            win_rect.center = (550, 440)
+            win_rect.center = (540, 440)
     else:
         even_font = pygame.font.Font(None, 90)
         even_surface = even_font.render('EVEN', True, red)
