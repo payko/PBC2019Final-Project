@@ -1,9 +1,8 @@
 ##needs:
-#1 第一關的計分問題
-#2 遊戲畫面頭像
-#3 RESULT的背景(WINNER vs LOSER)
+
+#3 排行榜的背景
 #4 音效
-#5 
+
 
 
 import pygame, sys, os 
@@ -34,7 +33,9 @@ def show_time(text, countdown):
 
 def show_end():
     timeup = pygame.image.load('Time\'s up.png')
-    screen.blit(timeup, (0, 0))
+    timeup_rect = timeup.get_rect()
+    timeup_rect.center = (width/2, height/2)
+    screen.blit(timeup, timeup_rect)
 
 # functions for enter names:
 def get_key(): 
@@ -107,11 +108,14 @@ def display(message, name1, name2, player):
     pygame.display.update()
 
 # functions for leader board
-def compared(n1, s1, n2, s2, want):
-    # input: 玩家名稱、得分、回傳winner(want = 'w')、回傳loser(want = 'l')
-    if (s1 >= s2 and want == 'w') or (s1 < s2 and want == 'l'):
-        return n1, s1
-    return n2, s2
+def find_winner(n1, s1, n2, s2):
+    # input: 玩家名稱、得分
+    if s1 > s2:
+        return 1
+    elif s2 > s1:
+        return 2
+    else:
+        return 0
 
 def write_board(name, score, Board):
     # 把一位玩家的結果記入排行榜
@@ -230,7 +234,8 @@ def new_question(number, questionnum):
 
 # functions for game3
 def effect3(random_word, random_color, show, score1, score2):
-
+    word = ['RED', 'BLACK', 'GREEN', 'BLUE', 'PURPLE', 'GRAY']
+    color = [(255, 0, 0), (0, 0, 0), (0, 128, 0), (0, 0, 255), (128, 0, 128), (128, 128, 128)]
     if word.index(random_word) == color.index(random_color) or color.index(random_color) > 5 :
         if show == 1:
             score1 += 2 # 加分音效
@@ -358,14 +363,66 @@ def prepare_window():
 def game_intro(image_rule):
     blank_window(None, image_start_button, image_rule)
 
-def result_window(string):
+def result_window(n1, s1, n2, s2, winner):
+    #input: 贏家編號(平手=0)
+    background, black, white = set_color()
+    red = (255,0,0)
     player1_face = pygame.image.load('player1.png')
     player2_face = pygame.image.load('player2.png')
+    
+    # 設定玩家
+    player_font = pygame.font.Font(None, 54)
+    player1_surface = player_font.render(n1, True, black)
+    player1_rect = player1_surface.get_rect()
+    player1_rect.center = (155, 320)
+    player2_surface = player_font.render(n2, True, black)
+    player2_rect = player2_surface.get_rect()
+    player2_rect.center = (545, 320)
+
+    # 設定分數
+    score_font = pygame.font.Font(None, 50)
+    score1_surf = score_font.render(str(s1), True, black)
+    score1_rect = score1_surf.get_rect()
+    score1_rect.center = (155, 360)
+    score2_surf = score_font.render(str(s2), True, black)
+    score2_rect = score2_surf.get_rect()
+    score2_rect.center = (545, 360)
+
+    # 設定贏家/平手字樣
+    if winner != 0:
+        win_font = pygame.font.Font(None, 90)
+        win_surface = win_font.render('WINNER', True, red)
+        win_rect = win_surface.get_rect()
+        if winner == 1:
+            win_rect.center = (150, 440)
+        elif winner == 2:
+            win_rect.center = (550, 440)
+    else:
+        even_font = pygame.font.Font(None, 90)
+        even_surface = even_font.render('EVEN', True, red)
+        even_rect = even_surface.get_rect()
+        even_rect.center = (width/2, 440)
+
     stay = True
     while stay:
         screen.blit(background_pic2, (0, 0))
         screen.blit(player1_face, (30, 60))
         screen.blit(player2_face, (width - 300, 60))  # 照片位置
+
+        # 顯示玩家名稱
+        screen.blit(player1_surface, player1_rect)
+        screen.blit(player2_surface, player2_rect)
+
+        # 顯示分數
+        screen.blit(score1_surf, score1_rect)
+        screen.blit(score2_surf, score2_rect)
+
+        # 顯示贏家字樣
+        if winner != 0:
+            screen.blit(win_surface, win_rect)
+        else:
+            screen.blit(even_surface, even_rect)
+
         for event in pygame.event.get():
             # 關閉視窗
             if event.type == pygame.QUIT:
@@ -378,12 +435,19 @@ def result_window(string):
         pygame.display.flip()
         mouse = pygame.mouse.get_pos()
 
-def board_window(wn, ws, ln, ls):
-    # input: 贏家名字、得分、輸家名字、得分
+def board_window(n1, s1, n2, s2, winner):
+    # input: 玩家名字、得分、贏家編號(平手==0)
     stay = True
     screen.fill(background)
     screen.blit(image_boardbg, (0, 0))
     # 之後補上
+
+    
+    if winner == 2:
+        wname, wscore, lname, lscore = name2, score2, name1, score1
+    else:  # 玩家一獲勝 or 平手
+        wname, wscore, lname, lscore = name1, score1, name2, score2
+
 
     # 讀入舊的排行榜
     r_file = open('排行榜.csv', 'r', newline='', encoding='utf-8')
@@ -469,9 +533,9 @@ def set_player(name, num):
     player_surface = player_font.render(name, True, black)
     player_rect = player_surface.get_rect()
     if num == 1:
-        player_rect.center = (20 + size / 2, 20 + size + 20 + 20)
+        player_rect.center = (20 + size / 2, 150)
     else:
-        player_rect.center = (width - 20 - size / 2, 20 + size + 20 + 20)
+        player_rect.center = (width - 20 - size / 2, 150)
     return player_surface, player_rect
 
 def set_scoretxt(score, num):
@@ -495,7 +559,7 @@ def set_score(score):
 # for game runnung
 def game_1(score1, score2):
     game1 = True
-    countdown = 60
+    countdown = 5
     
     background, black, white = set_color()
     size = 140
@@ -540,18 +604,20 @@ def game_1(score1, score2):
         screen.blit(score1txt_surface, score1txt_rect)  # 玩家1分數
         screen.blit(score2txt_surface, score2txt_rect)  # 玩家2分數
         score1_surface = set_score(score1)
-        screen.blit(score1_surface, (200,80))
+        screen.blit(score1_surface, (195,80))
         score2_surface = set_score(score2)
         screen.blit(score2_surface, (480,80))
             
         countstext = str(countdown)
         if countdown > 0:
             show_time(countstext, countdown)
+            if (((time - start)//1000) % 2) == 0 and ((time - start)//1000) != last:
+                pass
+            else:
+                screen.blit(question_surface, question_rect)
         else:
             show_end()
-        # 顯示題目
-        if countdown > 0:
-            screen.blit(question_surface, question_rect)
+
         if (((time - start)//1000) % 2) == 0 and ((time - start)//1000) != last: #每2秒換一個數字
             last = (time - start) // 1000
             random_ = random.randint(0,1000)
@@ -599,7 +665,7 @@ def game_1(score1, score2):
 
 def game_2(score1, score2):
     game2 = True
-    countdown = 90
+    countdown = 5
     background, black, white = set_color()
     orange = (255, 147, 0)
     size = 140
@@ -671,7 +737,7 @@ def game_2(score1, score2):
 
             #顯示分數
             score_surf = set_score(score1)
-            screen.blit(score_surf, (200,80))
+            screen.blit(score_surf, (195,80))
             score_surf = set_score(score2)
             screen.blit(score_surf, (480,80))
 
@@ -754,7 +820,7 @@ def game_2(score1, score2):
 
 def game_3(score1, score2):
     game3 = True
-    countdown = 50
+    countdown = 5
     background, black, white = set_color()
     size = 140
     player_font = pygame.font.Font(None, 32)
@@ -798,14 +864,17 @@ def game_3(score1, score2):
         screen.blit(score1txt_surface, score1txt_rect)  # 玩家1分數
         screen.blit(score2txt_surface, score2txt_rect)  # 玩家2分數
         score1_surface = set_score(score1)
-        screen.blit(score1_surface, (200,80))
+        screen.blit(score1_surface, (195,80))
         score2_surface = set_score(score2)
         screen.blit(score2_surface, (480,80))
         
         countstext = str(countdown)
         if countdown > 0:
             show_time(countstext, countdown)
-            screen.blit(question_surface, question_rect)
+            if (((time - start)//1000) % 0.5) == 0 and ((time - start)//1000) != last:
+                pass
+            else:
+                screen.blit(question_surface, question_rect)
         else:
             show_end()
 
@@ -956,7 +1025,7 @@ image_again_button = pygame.image.load('再來一次.png')
 image_end_button = pygame.image.load('遊戲結束.png')
 image_boardbg = pygame.image.load('排行榜.png')
 background_pic1 = pygame.image.load('background_pic1.png')
-background_pic2 = pygame.image.load('background_pic2.jpg')
+background_pic2 = pygame.image.load('background_pic2 .png')
 beginning_enter = pygame.image.load('beginingenter.png')
 intro_background = pygame.image.load('introbg.png')
 name_font = pygame.font.SysFont('comicsansmsttf', 25)
@@ -990,17 +1059,15 @@ while again:
     player2_surface, player2_rect = set_player(name2, 2)
     
     game_intro(image_rule1)
-    score1, score2 = game_1(score1, score2)  # 按數字 1 鍵會跳下一頁
+    score1, score2 = game_1(score1, score2)
     
     game_intro(image_rule2)
-    score1, score2 = game_2(score1, score2)  # 按數字 1 鍵會跳下一頁
-    game_intro(image_rule3)
-    score1, score2 = game_3(score1, score2)  # 按數字 1 鍵會跳下一頁
+    score1, score2 = game_2(score1, score2)
     
-    # 判斷輸家贏家
-    wname, wscore = compared(name1, score1, name2, score2, 'w')
-    lname, lscore = compared(name1, score1, name2, score2, 'l')
-
-    result_window('Result')  # for 最終輸贏畫面
-    board_window(wname, wscore, lname, lscore)  # for 排行榜
+    game_intro(image_rule3)
+    score1, score2 = game_3(score1, score2)
+    # 判斷輸贏
+    winner = find_winner(name1, score1, name2, score2)
+    result_window(name1, score1, name2, score2, winner)  # for 最終輸贏畫面
+    board_window(name1, score1, name2, score2, winner)  # for 排行榜
     again = ending_window('Again?')
