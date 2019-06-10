@@ -559,7 +559,7 @@ def set_score(score):
 # for game runnung
 def game_1(score1, score2):
     game1 = True
-    countdown = 5
+    countdown = 60
     
     background, black, white = set_color()
     size = 140
@@ -665,7 +665,7 @@ def game_1(score1, score2):
 
 def game_2(score1, score2):
     game2 = True
-    countdown = 5
+    countdown = 90
     background, black, white = set_color()
     orange = (255, 147, 0)
     size = 140
@@ -820,7 +820,7 @@ def game_2(score1, score2):
 
 def game_3(score1, score2):
     game3 = True
-    countdown = 5
+    countdown = 50
     background, black, white = set_color()
     size = 140
     player_font = pygame.font.Font(None, 32)
