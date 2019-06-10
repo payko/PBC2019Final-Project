@@ -48,8 +48,8 @@ def get_key():
 
 def ask_name(player, name1, name2): 
     "ask(question) -> answer" 
-    current_string = "" 
-    display(current_string, name1, name2, player) 
+    current_string = ""  # 用來記輸入的字串
+    display(current_string, name1, name2, player)  # 顯示還沒有輸入字串時的樣子
     while True: 
         inkey = get_key() 
         if inkey == pygame.K_BACKSPACE: 
@@ -60,13 +60,13 @@ def ask_name(player, name1, name2):
             pygame.quit()
         else: 
             current_string += chr(inkey)
+        # 每輸入(或刪除)一個字母就刷新一次頁面
         display(current_string.capitalize(), name1, name2, player) 
 
     return current_string.capitalize() # this is the answer
 
 def display(message, name1, name2, player):
-
-    #orange = (255, 147, 0)
+    # 輸入玩家名稱過程中的頁面刷新
     black = (0, 0, 0)
     player1_face = pygame.image.load('player1.png')
     player2_face = pygame.image.load('player2.png')
@@ -84,21 +84,27 @@ def display(message, name1, name2, player):
     screen.blit(player1_face, (30, 60))
     screen.blit(player2_face, (width - 300, 60))  # 照片位置
     screen.blit(vs, (250, 0))
+
+    # 顯示文字
     screen.blit(nametxt1_surf, (35, 400))
     screen.blit(nametxt2_surf, (35, 420))
     screen.blit(nametxt3_surf, (width - 295, 400))
     screen.blit(nametxt4_surf, (width - 295, 420))
 
+    # 如果另外一個玩家已經輸入名稱 則顯示
     if name1:
         screen.blit(name_font.render(name1, True, black), (125, 400))
     if name2:
         screen.blit(name_font.render(name2, True, black), (width - 205, 400))
 
+    # 顯示文字(在正在輸入的玩家那邊)
     txt5_surf = txt_font.render('Press Enter when done', True, (0, 0, 0))
     if player == 1:
         screen.blit(txt5_surf, (35, 450))
     else:
         screen.blit(txt5_surf, (width - 295, 450))
+    
+    # 顯示正在輸入的字串
     if len(message) != 0:
         if player == 1:
             screen.blit(name_font.render(message, True, black), (125, 400))
@@ -111,23 +117,27 @@ def display(message, name1, name2, player):
 def find_winner(n1, s1, n2, s2):
     # input: 玩家名稱、得分
     if s1 > s2:
-        return 1
+        return 1  # 玩家一獲勝
     elif s2 > s1:
-        return 2
+        return 2  # 玩家二獲勝
     else:
-        return 0
+        return 0  # 平手
 
 def write_board(name, score, Board):
     # 把一位玩家的結果記入排行榜
     for i in range(1, len(Board)):
         if Board[i][1] == '':
+            # 如果排行榜是空的
             Board[i][1] = name
             Board[i][2] = score
             break
         elif score >= int(Board[i][2]):
+            # 如果此次遊戲分數比排行榜的某行高
             for k in range(1, len(Board) - i):
+                # 把該某行以後的排名往後移一名
                 Board[-k][1] = Board[-(k + 1)][1]
                 Board[-k][2] = Board[-(k + 1)][2]
+            # 計入新加入的排名
             Board[i][1] = name
             Board[i][2] = score
             break
@@ -461,12 +471,11 @@ def board_window(n1, s1, n2, s2, winner):
     screen.blit(image_boardbg, (0, 0))
     # 之後補上
 
-    
-    if winner == 2:
+    # 設定贏家輸家
+    if winner == 2:  # 玩家二獲勝
         wname, wscore, lname, lscore = name2, score2, name1, score1
     else:  # 玩家一獲勝 or 平手
         wname, wscore, lname, lscore = name1, score1, name2, score2
-
 
     # 讀入舊的排行榜
     r_file = open('排行榜.csv', 'r', newline='', encoding='utf-8')
@@ -492,7 +501,7 @@ def board_window(n1, s1, n2, s2, winner):
     for i in range(1, 7):
         player = str(Board[i][1])
         score = str(Board[i][2])
-        if player:
+        if player:  # 如果排行榜的第 i 行有遊戲紀錄，則顯示
             player_surface = output_font.render('{}'.format(player), True, black)
             player_rect = player_surface.get_rect()
             player_rect.center = (300, 230 + 50 * i)
