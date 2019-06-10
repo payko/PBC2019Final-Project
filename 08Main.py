@@ -1,12 +1,5 @@
-##needs:
-
-#3 排行榜的背景
-#4 音效
-
-
-
-import pygame, sys, os 
-os.environ['SDL_VIDEO_CENTERED'] = '1' # centers Pygame SCREEN on desktop 
+import pygame, sys, os
+os.environ['SDL_VIDEO_CENTERED'] = '1'  # centers Pygame SCREEN on desktop
 import csv
 from PIL import Image
 import cv2
@@ -17,13 +10,12 @@ pygame.init()
 COUNT = pygame.USEREVENT + 1
 pygame.time.set_timer(COUNT, 1000)  # 每隔1秒發送一次自定義事件
 
-
 # functions for countdown
-def show_time(text, countdown):
+def show_time(text, countdown):  # 時間倒數器
     font = pygame.font.Font(None, 60)
     font_big = pygame.font.Font(None, 80)
     red = (255, 0, 0)
-    if countdown <= 3:
+    if countdown <= 3:  # 倒數3秒內變紅字
         clock_surface = font_big.render(text, True, red)
     else:
         clock_surface = font.render(text, True, black)
@@ -31,14 +23,14 @@ def show_time(text, countdown):
     clock_rect.center = (width / 2, 160)
     screen.blit(clock_surface, clock_rect)
 
-def show_end():
+def show_end():  # 時間到
     timeup = pygame.image.load('Time\'s up.png')
     timeup_rect = timeup.get_rect()
     timeup_rect.center = (width/2, height/2)
     screen.blit(timeup, timeup_rect)
 
 # functions for enter names:
-def get_key(): 
+def get_key():
     while 1: 
      for event in pygame.event.get(): 
       if event.type == pygame.KEYDOWN: 
@@ -49,8 +41,9 @@ def get_key():
 def ask_name(player, name1, name2): 
     "ask(question) -> answer" 
     current_string = ""  # 用來記輸入的字串
-    display(current_string, name1, name2, player)  # 顯示還沒有輸入字串時的樣子
-    while True: 
+    display(current_string, name1, name2, player)
+
+    while True:
         inkey = get_key() 
         if inkey == pygame.K_BACKSPACE: 
             current_string = current_string[:-1]
@@ -75,9 +68,9 @@ def display(message, name1, name2, player):
     player2_face.convert()
 
     # 設定文字
-    nametxt1_surf = txt_font.render('Player 1: ____________', True, black)
+    nametxt1_surf = txt_font.render('Player 1: __________', True, black)
     nametxt2_surf = txt_font.render('(Press s to enter name)', True, black)
-    nametxt3_surf = txt_font.render('Player 2: ____________', True, black)
+    nametxt3_surf = txt_font.render('Player 2: __________', True, black)
     nametxt4_surf = txt_font.render('(Press k to enter name)', True, black)
 
     screen.blit(background_pic2, (0, 0))
@@ -93,9 +86,9 @@ def display(message, name1, name2, player):
 
     # 如果另外一個玩家已經輸入名稱 則顯示
     if name1:
-        screen.blit(name_font.render(name1, True, black), (125, 400))
+        screen.blit(name_font.render(name1, True, black), (125, 397))
     if name2:
-        screen.blit(name_font.render(name2, True, black), (width - 205, 400))
+        screen.blit(name_font.render(name2, True, black), (width - 205, 397))
 
     # 顯示文字(在正在輸入的玩家那邊)
     txt5_surf = txt_font.render('Press Enter when done', True, (0, 0, 0))
@@ -107,9 +100,9 @@ def display(message, name1, name2, player):
     # 顯示正在輸入的字串
     if len(message) != 0:
         if player == 1:
-            screen.blit(name_font.render(message, True, black), (125, 400))
+            screen.blit(name_font.render(message, True, black), (125, 397))
         else:
-            screen.blit(name_font.render(message, True, black), (width - 205, 400))
+            screen.blit(name_font.render(message, True, black), (width - 205, 397))
 
     pygame.display.update()
 
@@ -196,8 +189,6 @@ def show_icons(num, imagelist, not_show_i, not_show_j, not_show_k, not_show_l):
                         flash1 = 0
                     else:
                         flash2 = 0
-
-
 
 def show_cover(num, image_cover, active, player):
     for i in range(1, int(len(num) / 2) + 1):
@@ -296,32 +287,6 @@ def effect3(random_word, random_color, show, score1, score2):
     return score1, score2
 
 # functions for create windows
-def blank_window(string, image_button, background_image):
-    stay = True
-    screen.fill(background)
-    if background_image != None:
-        screen.blit(background_image, (0, 0))
-
-    if string != None:
-        output_font = pygame.font.Font(None, 60)  # 字體大小 = 60
-        output_surface = output_font.render(string, True, black)
-        output_rect = output_surface.get_rect()
-        output_rect.center = (width / 2, height / 2)
-        screen.blit(output_surface, output_rect)
-    while stay:
-        for event in pygame.event.get():
-            # 關閉視窗
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if 500 < mouse[0] < 630 and 515 < mouse[1] < 565:  # 給button設定的範圍
-                    pygame.mixer.Sound.play(select)
-                    stay = False
-        screen.blit(image_button, (button_x, button_y))
-        pygame.display.flip()
-        mouse = pygame.mouse.get_pos()
-
 def beginning_window():
     
     counter = 0
@@ -377,9 +342,9 @@ def prepare_window():
         screen.blit(nametxt3_surf, (width - 295, 400))
         screen.blit(nametxt4_surf, (width - 295, 420))
         if name1:
-            screen.blit(name_font.render(name1, True, black), (125, 400))
+            screen.blit(name_font.render(name1, True, black), (125, 397))
         if name2:
-            screen.blit(name_font.render(name2, True, black), (width - 205, 400))
+            screen.blit(name_font.render(name2, True, black), (width - 205, 397))
         if bad:
             txt6_surf = txt_font.render('Please enter your names!', True, red)
             txt6_rect = txt6_surf.get_rect()
@@ -413,7 +378,23 @@ def prepare_window():
     return name1, name2
 
 def game_intro(image_rule):
-    blank_window(None, image_start_button, image_rule)
+    stay = True
+    screen.blit(image_rule, (0, 0))
+    screen.blit(image_start_button, (button_x, button_y))
+
+    while stay:
+        for event in pygame.event.get():
+            # 關閉視窗
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if 500 < mouse[0] < 630 and 515 < mouse[1] < 565:  # 給button設定的範圍
+                    pygame.mixer.Sound.play(select)
+                    stay = False
+
+        pygame.display.flip()
+        mouse = pygame.mouse.get_pos()
 
 def result_window(n1, s1, n2, s2, winner):
     #input: 贏家編號(平手=0)
@@ -446,7 +427,7 @@ def result_window(n1, s1, n2, s2, winner):
 
     # 設定贏家/平手字樣
     if winner != 0:
-        win_font = pygame.font.Font(None, 90)
+        win_font = pygame.font.SysFont('comicsansmsttf', 64)
         win_surface = win_font.render('WINNER', True, red)
         win_rect = win_surface.get_rect()
         if winner == 1:
@@ -454,7 +435,7 @@ def result_window(n1, s1, n2, s2, winner):
         elif winner == 2:
             win_rect.center = (540, 440)
     else:
-        even_font = pygame.font.Font(None, 90)
+        even_font = pygame.font.SysFont('comicsansmsttf', 64)
         even_surface = even_font.render('EVEN', True, red)
         even_rect = even_surface.get_rect()
         even_rect.center = (width/2, 440)
@@ -493,7 +474,7 @@ def result_window(n1, s1, n2, s2, winner):
         mouse = pygame.mouse.get_pos()
 
 def board_window(n1, s1, n2, s2, winner):
-    # input: 玩家名字、得分、贏家編號(平手==0)
+    # input: 玩家名字、得分、贏家編號(平手=0)
     stay = True
     screen.fill(background)
     screen.blit(image_boardbg, (0, 0))
@@ -602,7 +583,7 @@ def set_scoretxt(score, num):
     size = 140
     # 設定分數
     score_font = pygame.font.Font(None, 32)  # 字體大小 = 32
-    score_surface = score_font.render(str(score), True, black)  # 玩家1分數
+    score_surface = score_font.render(str(score), True, black)  # 玩家分數
     score_rect = score_surface.get_rect()
     if num == 1:
         score_rect.center = (20 + size + 50, 50)
@@ -621,7 +602,6 @@ def game_1(score1, score2):
     countdown = 63
     play = 0 # time_up音效播放
     background, black, white = set_color()
-    size = 140
     player_font = pygame.font.Font(None, 32)
 
     # 設定題目
@@ -1136,11 +1116,13 @@ button_y = 480
 screen = pygame.display.set_mode((width, height))
 update_rect = pygame.Rect(0, 300, 700, 250)
 pygame.display.set_caption('善挑')
+
 # 設定音效
 select = pygame.mixer.Sound('select.wav')
 correct = pygame.mixer.Sound('correct.wav')
 wrong = pygame.mixer.Sound('wrong.wav')
 time_up = pygame.mixer.Sound('time up.wav')
+
 # image_rule0 = pygame.image.load()
 image_rule1 = pygame.image.load('第一關遊戲規則.png')
 image_rule2 = pygame.image.load('第二關遊戲規則.png')
@@ -1155,19 +1137,20 @@ background_pic1 = pygame.image.load('background_pic1.png')
 background_pic2 = pygame.image.load('background_pic2 .png')
 beginning_enter = pygame.image.load('beginingenter.png')
 intro_background = pygame.image.load('introbg.png')
-name_font = pygame.font.SysFont('comicsansmsttf', 25)
-txt_font = pygame.font.SysFont('comicsansmsttf', 20)
 ending_background = pygame.image.load('background_end.png')
 image_again_yes_button = pygame.image.load('Yes_button.png')
 image_again_no_button = pygame.image.load('No_button.png')
 
+# 設定字型
+name_font = pygame.font.SysFont('comicsansmsttf', 25)
+txt_font = pygame.font.SysFont('comicsansmsttf', 20)
+
 background, black, white = set_color()
 size = 140
+
 # 設定玩家
 name1 = 'Name1'
 name2 = 'Name2'
-
-
 
 # run
 again = True
