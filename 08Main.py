@@ -171,8 +171,6 @@ def show_icons(num, imagelist, not_show_i, not_show_j, not_show_k, not_show_l):
     # input: a list
     global flash1
     global flash2
-    print(not_show_i,not_show_j,"icon")
-    print(not_show_k, not_show_l,"icon")
 
     for i in range(len(num)):
         for j in range(4):
@@ -929,8 +927,6 @@ def game_2(score1, score2):
                     countstext = str(countdown)
                     if countdown == -3:
                         game2 = False
-                print(not_show_i,not_show_j,1)
-                print(not_show_k, not_show_l)
     return score1, score2
 
 def game_3(score1, score2):
