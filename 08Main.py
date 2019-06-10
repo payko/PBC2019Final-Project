@@ -32,6 +32,8 @@ def show_time(text, countdown):
     screen.blit(clock_surface, clock_rect)
 
 def show_end():
+    pygame.mixer.music.load('time up.mp3')
+    pygame.mixer.music.play()
     timeup = pygame.image.load('Time\'s up.png')
     timeup_rect = timeup.get_rect()
     timeup_rect.center = (width/2, height/2)
@@ -270,6 +272,8 @@ def blank_window(string, image_button, background_image):
                 quit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if 500 < mouse[0] < 630 and 515 < mouse[1] < 565:  # 給button設定的範圍
+                    pygame.mixer.music.load('select.mp3')
+                    pygame.mixer.music.play()
                     stay = False
         screen.blit(image_button, (button_x, button_y))
         pygame.display.flip()
@@ -354,6 +358,8 @@ def prepare_window():
                     if name1 == "" or name2 == "":
                         bad = True
                     else:
+                        pygame.mixer.music.load('select.mp3')
+                        pygame.mixer.music.play()
                         stay = False
         screen.blit(image_done_button, (button_x, button_y))
         pygame.display.flip()
@@ -430,6 +436,8 @@ def result_window(n1, s1, n2, s2, winner):
                 quit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if 500 < mouse[0] < 630 and 515 < mouse[1] < 565:  # 給button設定的範圍
+                    pygame.mixer.music.load('select.mp3')
+                    pygame.mixer.music.play()
                     stay = False
         screen.blit(image_next_button, (button_x, button_y))
         pygame.display.flip()
@@ -490,6 +498,8 @@ def board_window(n1, s1, n2, s2, winner):
                 quit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if 500 < mouse[0] < 630 and 515 < mouse[1] < 565:  # 給button設定的範圍
+                    pygame.mixer.music.load('select.mp3')
+                    pygame.mixer.music.play()
                     stay = False
         screen.blit(image_next_button, (button_x, button_y))
         pygame.display.flip()
