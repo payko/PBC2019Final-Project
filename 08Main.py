@@ -317,6 +317,7 @@ def beginning_window():
             if event.type == pygame.QUIT:
                 pygame.quit()
             if event.type == KEYDOWN and event.key == K_RETURN: # enter鍵
+                pygame.mixer.Sound.play(select)
                 running = False
             if event.type == COUNT:
                 counter += 1
@@ -1062,6 +1063,7 @@ def intro_0():
             if event.type == pygame.QUIT:
                 running = False
             if event.type == KEYDOWN and event.key == K_RETURN: # enter鍵
+                pygame.mixer.Sound.play(select)
                 running = False
         pygame.display.update()
 
