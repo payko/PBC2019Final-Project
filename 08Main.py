@@ -167,17 +167,39 @@ def effect(random_, show, score1, score2):
     return score1, score2
 
 # functions for game2
-def show_icons(num, imagelist):
+def show_icons(num, imagelist, not_show_i, not_show_j, not_show_k, not_show_l):
     # input: a list
+    global flash1
+    global flash2
+    print(not_show_i,not_show_j,"icon")
+    print(not_show_k, not_show_l,"icon")
+
     for i in range(len(num)):
         for j in range(4):
-            if i < len(num) / 2:
-                x = 30 + 75.3 * j
-                y = 223 + 70 * i
+            if flash1 == 0 and flash2 ==0:
+                if i < len(num) / 2:
+                    x = 30 + 75.3 * j
+                    y = 223 + 70 * i
+                else:
+                    x = 380 + 75.3 * j
+                    y = 223 + 70 * (i - len(num) / 2)
+                screen.blit(imagelist[num[i][j]], (x, y))
             else:
-                x = 380 + 75.3 * j
-                y = 223 + 70 * (i - len(num) / 2)
-            screen.blit(imagelist[num[i][j]], (x, y))
+                if not ((i == not_show_i and j == not_show_j) or (i == not_show_k and j == not_show_l)): #不是要閃爍的圖示
+                    if i < len(num) / 2:
+                        x = 30 + 75.3 * j
+                        y = 223 + 70 * i
+                    else:
+                        x = 380 + 75.3 * j
+                        y = 223 + 70 * (i - len(num) / 2)
+                    screen.blit(imagelist[num[i][j]], (x, y))
+                else:
+                    if i < len(num) / 2:
+                        flash1 = 0
+                    else:
+                        flash2 = 0
+
+
 
 def show_cover(num, image_cover, active, player):
     for i in range(1, int(len(num) / 2) + 1):
@@ -599,6 +621,7 @@ def set_score(score):
 def game_1(score1, score2):
     game1 = True
     countdown = 63
+    play = 0 # time_up音效播放
     background, black, white = set_color()
     size = 140
     player_font = pygame.font.Font(None, 32)
@@ -634,7 +657,7 @@ def game_1(score1, score2):
         # 顯示玩家
         screen.blit(player1_image, (20, 20))  # 玩家1頭像
         screen.blit(player1_surface, player1_rect)  # 玩家1名稱
-        screen.blit(player2_image, (width/2 + 200, 20))  # 玩家1頭像  # 玩家2頭像
+        screen.blit(player2_image, (width/2 + 200, 20))  # 玩家1頭像
         screen.blit(player2_surface, player2_rect)  # 玩家2名稱
         time = pygame.time.get_ticks()  #開啟程式後經過的時間
         
@@ -660,8 +683,9 @@ def game_1(score1, score2):
             else:
                 screen.blit(question_surface, question_rect)
         else:
-            if countdown == 0: # time_up音效
+            if countdown == 0 and play == 0: # time_up音效
                 pygame.mixer.Sound.play(time_up)
+                play = 1
             show_end()
 
         if (((time - start)//1000) % 2) == 0 and ((time - start)//1000) != last: #每2秒換一個數字
@@ -712,9 +736,16 @@ def game_1(score1, score2):
 def game_2(score1, score2):
     game2 = True
     countdown = 93
+    play = 0 # time_up音效播放
     background, black, white = set_color()
     orange = (255, 147, 0)
     size = 140
+
+    # 圖片是否閃爍
+    global flash1
+    global flash2
+    flash1 = 0
+    flash2 = 0
 
     # 設定分數
     score1txt_surface, score1txt_rect = set_scoretxt('Score1', 1)
@@ -747,6 +778,10 @@ def game_2(score1, score2):
     questionnum = 1 #第幾題了
     number = 1 #總共幾排
     while game2:
+        not_show_i = -1
+        not_show_j = -1
+        not_show_k = -1
+        not_show_l = -1
         # 隨機產生0-7之亂數
         num = new_question(number, questionnum)
         if questionnum < 10:
@@ -776,7 +811,7 @@ def game_2(score1, score2):
 
             # 顯示圖示
             if countdown <= 90:
-                show_icons(num, imagelist)
+                show_icons(num, imagelist, not_show_i, not_show_j, not_show_k, not_show_l)
 
             # 顯示遮罩
             show_cover(num, image_cover, i + 1, player=1)
@@ -794,8 +829,9 @@ def game_2(score1, score2):
             elif countdown > 0:
                 show_time(countstext, countdown)
             else:
-                if countdown == 0: # time_up音效
+                if countdown == 0 and play == 0: # time_up音效
                     pygame.mixer.Sound.play(time_up)
+                    play = 1
                 show_end()
 
             pygame.display.flip()
@@ -818,6 +854,8 @@ def game_2(score1, score2):
                             i, j, index1 = next_pos(num, i, j, index1, player = 1)
                         elif num[i][j] != 0 or num[i][j] != 4:
                             score1 -= 1 #錯誤分數-1&音效
+                            flash1 = 1 #圖示閃爍
+                            not_show_i, not_show_j = i, j#閃爍圖示的位置
                             pygame.mixer.Sound.play(wrong)
                     if event.key == pygame.K_s:
                         if num[i][j] == 1 or num[i][j] == 5:
@@ -825,6 +863,8 @@ def game_2(score1, score2):
                             i, j, index1 = next_pos(num, i, j, index1, player = 1)
                         elif num[i][j] != 1 or num[i][j] != 5:
                             score1 -= 1   #錯誤分數-1&音效
+                            flash1 = 1 #圖示閃爍
+                            not_show_i, not_show_j = i, j#閃爍圖示的位置
                             pygame.mixer.Sound.play(wrong)
                     if event.key == pygame.K_a:
                         if num[i][j] == 2 or num[i][j] == 6:
@@ -832,6 +872,8 @@ def game_2(score1, score2):
                             i, j, index1 = next_pos(num, i, j, index1, player = 1)
                         elif num[i][j] != 2 or num[i][j] != 6:
                             score1 -= 1  #錯誤分數-1&音效
+                            flash1 = 1 #圖示閃爍
+                            not_show_i, not_show_j = i, j#閃爍圖示的位置
                             pygame.mixer.Sound.play(wrong)
                     if event.key == pygame.K_d:
                         if num[i][j] == 3 or num[i][j] == 7:
@@ -839,35 +881,45 @@ def game_2(score1, score2):
                             i, j, index1 = next_pos(num, i, j, index1, player = 1)
                         elif num[i][j] != 3 or num[i][j] != 7:
                             score1 -= 1 #錯誤分數-1&音效
+                            flash1 = 1 #圖示閃爍
+                            not_show_i, not_show_j = i, j#閃爍圖示的位置
                             pygame.mixer.Sound.play(wrong)
                     #玩家2輸入時
                     if event.key == pygame.K_UP:
                         if num[k][l] == 0 or num[k][l] == 4:
                             num[k][l] += 8  # 變成after的圖示&簡易音效
                             k, l, index2 = next_pos(num, k, l, index2, player = 2)
-                        elif num[i][j] != 0 or num[i][j] != 4:
+                        elif num[k][l] != 0 or num[k][l] != 4:
                             score2 -= 1 #錯誤分數-1&音效
+                            flash2 = 1 #圖示閃爍
+                            not_show_k, not_show_l = k, l#閃爍圖示的位置
                             pygame.mixer.Sound.play(wrong)
                     if event.key == pygame.K_DOWN:
                         if num[k][l] == 1 or num[k][l] == 5:
                             num[k][l] += 8  # 變成after的圖示&簡易音效
                             k, l, index2 = next_pos(num, k, l, index2, player = 2)
-                        elif num[i][j] != 1 or num[i][j] != 5:
+                        elif num[k][l] != 1 or num[k][l] != 5:
                             score2 -= 1 #錯誤分數-1&音效
+                            flash2 = 1 #圖示閃爍
+                            not_show_k, not_show_l = k, l#閃爍圖示的位置
                             pygame.mixer.Sound.play(wrong)
                     if event.key == pygame.K_LEFT:
                         if num[k][l] == 2 or num[k][l] == 6:
                             num[k][l] += 8  # 變成after的圖示&簡易音效
                             k, l, index2 = next_pos(num, k, l, index2, player = 2)
-                        elif num[i][j] != 2 or num[i][j] != 6:
+                        elif num[k][l] != 2 or num[k][l] != 6:
                             score2 -= 1 #錯誤分數-1&音效
+                            flash2 = 1 #圖示閃爍
+                            not_show_k, not_show_l = k, l#閃爍圖示的位置
                             pygame.mixer.Sound.play(wrong)
                     if event.key == pygame.K_RIGHT:
                         if num[k][l] == 3 or num[k][l] == 7:
                             num[k][l] += 8  # 變成after的圖示&簡易音效
                             k, l, index2 = next_pos(num, k, l, index2, player = 2)
-                        elif num[i][j] != 3 or num[i][j] != 7:
+                        elif num[k][l] != 3 or num[k][l] != 7:
                             score2 -= 1 #錯誤分數-1&音效
+                            flash2 = 1 #圖示閃爍
+                            not_show_k, not_show_l = k, l#閃爍圖示的位置
                             pygame.mixer.Sound.play(wrong)
                 if event.type == pygame.QUIT:
                     pygame.quit()
@@ -877,11 +929,14 @@ def game_2(score1, score2):
                     countstext = str(countdown)
                     if countdown == -3:
                         game2 = False
+                print(not_show_i,not_show_j,1)
+                print(not_show_k, not_show_l)
     return score1, score2
 
 def game_3(score1, score2):
     game3 = True
     countdown = 53
+    play = 0 # time_up音效播放
     background, black, white = set_color()
     size = 140
     player_font = pygame.font.Font(None, 32)
@@ -943,8 +998,9 @@ def game_3(score1, score2):
             else:
                 screen.blit(question_surface, question_rect)
         else:
-            if countdown == 0: # time_up音效
+            if countdown == 0 and play == 0: # time_up音效
                 pygame.mixer.Sound.play(time_up)
+                play = 1
             show_end()
 
         if (((time - start)//1000) % 0.5) == 0 and ((time - start)//1000) != last: #每半秒換一次題目
