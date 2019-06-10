@@ -306,7 +306,10 @@ def beginning_window():
     
     counter = 0
     running = True
-    
+    # 設定音效
+    play_game = pygame.mixer.Sound('play game.wav')
+    pygame.mixer.Sound.play(play_game)
+
     while running:
         screen.fill((0, 0, 0))
         screen.blit(background_pic1, (0, 0))
@@ -398,6 +401,10 @@ def result_window(n1, s1, n2, s2, winner):
     red = (255,0,0)
     player1_face = pygame.image.load('player1.png')
     player2_face = pygame.image.load('player2.png')
+
+    # 設定音效
+    applause = pygame.mixer.Sound('applause.wav')
+    pygame.mixer.Sound.play(applause)
     
     # 設定玩家
     player_font = pygame.font.Font(None, 54)
@@ -537,12 +544,12 @@ def ending_window(string):
                 quit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if 170 < mouse[0] < 310 and 280 < mouse[1] < 350:  # 給Again button設定的範圍
-                    again = True
                     pygame.mixer.Sound.play(select)
+                    again = True
                     stay = False
                 elif 390 < mouse[0] < 530 and 280 < mouse[1] < 350:  # 給End button設定的範圍
-                    again = False
                     pygame.mixer.Sound.play(select)
+                    again = False
                     stay = False
         screen.blit(image_again_yes_button, (width / 2 - 180, height / 2 - 20))
         screen.blit(image_again_no_button, (width / 2 + 40, height / 2 - 20))
