@@ -559,7 +559,7 @@ def set_score(score):
 # for game runnung
 def game_1(score1, score2):
     game1 = True
-    countdown = 60
+    countdown = 63
     
     background, black, white = set_color()
     size = 140
@@ -609,7 +609,13 @@ def game_1(score1, score2):
         screen.blit(score2_surface, (480,80))
             
         countstext = str(countdown)
-        if countdown > 0:
+        if countdown > 60:  
+            show_time(str(countdown - 60), countdown - 60)
+        elif countdown > 0:
+            if start:
+                pass
+            else:
+                start = pygame.time.get_ticks()
             show_time(countstext, countdown)
             if (((time - start)//1000) % 2) == 0 and ((time - start)//1000) != last:
                 pass
@@ -624,7 +630,7 @@ def game_1(score1, score2):
             question_surface = question_font.render('{}'.format(str(random_)), True, black)  # Question更改為隨機數字
             question_rect = question_surface.get_rect()
             question_rect.center = (width / 2, height / 2)
-            if countdown > 0:
+            if countdown <= 60 and countdown > 0:
                 screen.blit(question_surface, question_rect)
             pygame.display.flip()
             show = 0
@@ -633,7 +639,7 @@ def game_1(score1, score2):
         else:
             for event in pygame.event.get():
             # player1按 s 鍵，player2按 k 鍵
-                if event.type == pygame.KEYDOWN and countdown > 0:
+                if event.type == pygame.KEYDOWN and countdown > 0 and countdown <= 60:
                     if event.key == pygame.K_s and getpoints == False:
                         show = 1
                         score1, score2 = effect(random_, show, score1, score2)
@@ -658,14 +664,14 @@ def game_1(score1, score2):
                 screen.blit(clap, (50, 350))
             elif show == 2:
                 screen.blit(clap, (width - 50 - 260, 350))
-
+        
         pygame.display.flip()
 
     return score1, score2
 
 def game_2(score1, score2):
     game2 = True
-    countdown = 90
+    countdown = 93
     background, black, white = set_color()
     orange = (255, 147, 0)
     size = 140
@@ -729,7 +735,8 @@ def game_2(score1, score2):
             pygame.draw.rect(screen, orange, (width / 2 + 20, 220, width / 2 - 40, 350), 2)  # 玩家2題目框框 310*350
 
             # 顯示圖示
-            show_icons(num, imagelist)
+            if countdown <= 90:
+                show_icons(num, imagelist)
 
             # 顯示遮罩
             show_cover(num, image_cover, i + 1, player=1)
@@ -742,7 +749,9 @@ def game_2(score1, score2):
             screen.blit(score_surf, (480,80))
 
             countstext = str(countdown)
-            if countdown > 0:
+            if countdown > 90:  
+                show_time(str(countdown - 90), countdown - 90)
+            elif countdown > 0:
                 show_time(countstext, countdown)
             else:
                 show_end()
@@ -757,7 +766,7 @@ def game_2(score1, score2):
                 break
 
             for event in pygame.event.get():
-                if event.type == pygame.KEYDOWN and countdown > 0: 
+                if event.type == pygame.KEYDOWN and countdown > 0 and countdown <= 90: 
                     #玩家1輸入時
                     if event.key == pygame.K_w:
                         if num[i][j] == 0 or num[i][j] == 4:
@@ -820,7 +829,7 @@ def game_2(score1, score2):
 
 def game_3(score1, score2):
     game3 = True
-    countdown = 50
+    countdown = 53
     background, black, white = set_color()
     size = 140
     player_font = pygame.font.Font(None, 32)
@@ -869,7 +878,13 @@ def game_3(score1, score2):
         screen.blit(score2_surface, (480,80))
         
         countstext = str(countdown)
-        if countdown > 0:
+        if countdown > 50:
+            show_time(str(countdown - 50), countdown - 50)
+        elif countdown > 0:
+            if start:
+                pass
+            else:
+                start = pygame.time.get_ticks()
             show_time(countstext, countdown)
             if (((time - start)//1000) % 0.5) == 0 and ((time - start)//1000) != last:
                 pass
@@ -888,7 +903,7 @@ def game_3(score1, score2):
             question_surface = question_font.render(str(random_word), True, random_color)  # Question更改為隨機單字
             question_rect = question_surface.get_rect()
             question_rect.center = (width / 2, height / 2)
-            if countdown > 0:
+            if countdown > 0 and countdown <= 50:
                 screen.blit(question_surface, question_rect)
             pygame.display.flip()
             show = 0
@@ -897,7 +912,7 @@ def game_3(score1, score2):
         else:
             for event in pygame.event.get():
             # player1按 s 鍵，player2按 k 鍵
-                if event.type == pygame.KEYDOWN and countdown > 0:
+                if event.type == pygame.KEYDOWN and countdown > 0 and countdown <= 50:
                     if event.key == pygame.K_s and getpoints == False:
                         show = 1
                         score1, score2 = effect3(random_word, random_color, show, score1, score2)
