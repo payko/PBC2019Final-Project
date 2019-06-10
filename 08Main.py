@@ -1108,13 +1108,14 @@ size = 140
 name1 = 'Name1'
 name2 = 'Name2'
 
-# 設定分數
-score1 = 0
-score2 = 0
+
 
 # run
 again = True
 while again:
+    # 設定分數
+    score1 = 0
+    score2 = 0
     again = False
     #blank_window('Beginning', image_start_button, None)  # for 遊戲開始畫面
     beginning_window()
