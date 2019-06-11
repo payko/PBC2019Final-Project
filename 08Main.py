@@ -487,7 +487,6 @@ def result_window(n1, s1, n2, s2, winner):
 def board_window(n1, s1, n2, s2, winner):
     # input: 玩家名字、得分、贏家編號(平手=0)
     stay = True
-    screen.fill(background)
     screen.blit(image_boardbg, (0, 0))
     # 之後補上
 
