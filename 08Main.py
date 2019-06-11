@@ -56,7 +56,7 @@ def ask_name(player, name1, name2):
         # 每輸入(或刪除)一個字母就刷新一次頁面
         display(current_string.capitalize(), name1, name2, player) 
 
-    return current_string.capitalize() # this is the answer
+    return current_string.capitalize()  # this is the answer
 
 def display(message, name1, name2, player):
     # 輸入玩家名稱過程中的頁面刷新
@@ -200,7 +200,7 @@ def show_cover(num, image_cover, active, player):
         else:
             x = 370
             y = 150 + 70 * i
-        screen.blit(image_cover, (x, y))  # 第二行遮罩
+        screen.blit(image_cover, (x, y))
 
 def next_pos(num, i, j, index, player):
     if player == 1:
@@ -288,7 +288,6 @@ def effect3(random_word, random_color, show, score1, score2):
 
 # functions for create windows
 def beginning_window():
-    
     counter = 0
     running = True
     # 設定音效
@@ -296,7 +295,6 @@ def beginning_window():
     pygame.mixer.Sound.play(play_game)
 
     while running:
-        screen.fill((0, 0, 0))
         screen.blit(background_pic1, (0, 0))
         if counter % 2 == 0:
             screen.blit(beginning_enter, (width / 2 - 120, height - 120))
@@ -304,11 +302,24 @@ def beginning_window():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-            if event.type == KEYDOWN and event.key == K_RETURN: # enter鍵
+            if event.type == KEYDOWN and event.key == K_RETURN:  # enter鍵
                 pygame.mixer.Sound.play(select)
                 running = False
             if event.type == COUNT:
                 counter += 1
+        pygame.display.update()
+
+def intro_0():
+    screen.blit(intro_background, (0, 0))
+    running = True
+
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            if event.type == KEYDOWN and event.key == K_RETURN:  # enter鍵
+                pygame.mixer.Sound.play(select)
+                running = False
         pygame.display.update()
 
 def prepare_window():
@@ -427,7 +438,7 @@ def result_window(n1, s1, n2, s2, winner):
 
     # 設定贏家/平手字樣
     if winner != 0:
-        win_font = pygame.font.SysFont('comicsansmsttf', 64)
+        win_font = pygame.font.SysFont('comicsansmsttf', 60)
         win_surface = win_font.render('WINNER', True, red)
         win_rect = win_surface.get_rect()
         if winner == 1:
@@ -435,7 +446,7 @@ def result_window(n1, s1, n2, s2, winner):
         elif winner == 2:
             win_rect.center = (540, 440)
     else:
-        even_font = pygame.font.SysFont('comicsansmsttf', 64)
+        even_font = pygame.font.SysFont('comicsansmsttf', 60)
         even_surface = even_font.render('EVEN', True, red)
         even_rect = even_surface.get_rect()
         even_rect.center = (width/2, 440)
@@ -482,9 +493,9 @@ def board_window(n1, s1, n2, s2, winner):
 
     # 設定贏家輸家
     if winner == 2:  # 玩家二獲勝
-        wname, wscore, lname, lscore = name2, score2, name1, score1
+        wname, wscore, lname, lscore = n2, s2, n1, s1
     else:  # 玩家一獲勝 or 平手
-        wname, wscore, lname, lscore = name1, score1, name2, score2
+        wname, wscore, lname, lscore = n1, s1, n2, s2
 
     # 讀入舊的排行榜
     r_file = open('排行榜.csv', 'r', newline='', encoding='utf-8')
@@ -1090,21 +1101,6 @@ def croppic():
     forgame_player2 = player2.resize((132, 110), Image.ANTIALIAS)
     forgame_player1.save('forgame_player1.png')
     forgame_player2.save('forgame_player2.png')
-
-
-def intro_0():
-    screen.blit(intro_background, (0, 0))
-    running = True
-
-
-    while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-            if event.type == KEYDOWN and event.key == K_RETURN: # enter鍵
-                pygame.mixer.Sound.play(select)
-                running = False
-        pygame.display.update()
 
 
 # main funtions
