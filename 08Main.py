@@ -1,14 +1,11 @@
-import pygame, sys, os
-os.environ['SDL_VIDEO_CENTERED'] = '1'  # centers Pygame SCREEN on desktop
-import csv
+import pygame, sys, os, csv, cv2, random
 from PIL import Image
-import cv2
-import random
 from pygame.locals import *
 
 pygame.init()
 COUNT = pygame.USEREVENT + 1
 pygame.time.set_timer(COUNT, 1000)  # 每隔1秒發送一次自定義事件
+os.environ['SDL_VIDEO_CENTERED'] = '1'  # centers Pygame SCREEN on desktop
 
 # functions for countdown
 def show_time(text, countdown):  # 時間倒數器
