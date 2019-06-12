@@ -1154,10 +1154,8 @@ while again:
     score1 = 0
     score2 = 0
     again = False
-    #blank_window('Beginning', image_start_button, None)  # for 遊戲開始畫面
     beginning_window()
     intro_0()
-    # game_intro(image_rule0)
     capture()
     croppic()
     name1, name2 = prepare_window()  # for 輸入玩家資訊
