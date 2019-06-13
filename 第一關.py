@@ -157,6 +157,6 @@ pygame.display.set_caption('第一關 3的世界')
 image_rule = pygame.image.load('第一關遊戲規則.png')
 
 # 設定遊戲開始按鈕
-image_button = pygame.image.load('遊戲開始按鈕.png')
+image_button = pygame.image.load('遊戲開始.png')
 game_intro()
 g1 = Game_1()
