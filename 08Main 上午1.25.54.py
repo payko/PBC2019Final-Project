@@ -348,7 +348,7 @@ class Three_games():
         else:
             clock_surface = font.render(text, True, black)
         clock_rect = clock_surface.get_rect()
-        clock_rect.center = (width/2, 160)
+        clock_rect.center = (width/2, 130)
         screen.blit(clock_surface, clock_rect)
 
 class Game_1():
